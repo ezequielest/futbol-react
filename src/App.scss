@@ -1,0 +1,17 @@
+@import "./scss/futbol.scss";
+@import "./components/sidebar/sidebar.scss";
+
+.layout-container {
+    display: flex;
+    .sidebar-container {
+        min-width: 300px;
+    }
+
+    .pages-container {
+        width: 100%;
+    }
+}
+
+.red-test {
+    background-color: red;
+}
