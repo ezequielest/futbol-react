@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import React, {useState} from 'react';
 import { db } from "/src/firebase/firebase.js";
-import { collection, getDocs } from "firebase/firestore"; 
-import { addDoc } from "firebase/firestore"; 
+import { addDoc, updateDoc, collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
 
 
 function AdminPlayers(props) {
@@ -27,6 +26,7 @@ function AdminPlayers(props) {
     const [newPlayerForm, setNewPlayerForm] = useState(initialNewPlayer);
     const [loading, setLoading] = useState(false);
     const [viewPlayerSelected, setViewPlayerSelected] = useState({});
+    const [isEditingPlayer, setIsEditingPlayer] = useState(false);
 
     useEffect(()=>{
 
@@ -71,30 +71,10 @@ function AdminPlayers(props) {
         return positions[number-1];
     }
 
-    const saveChange = () => {
-        console.log('result form ', newPlayerForm);
+    const saveChange = async () => {
 
-        let points = 
-            (
-                (parseInt(newPlayerForm.ability) * 0.5) + 
-                (parseInt(newPlayerForm.resistance) * 0.1) + 
-                (parseInt(newPlayerForm.speed) * 0.1) + 
-                (parseInt(newPlayerForm.powerShoot) * 0.2)
-            );
-        
-        //1 arquero - 2 defensa - 3 mediocampista - 4 delantero TODO crear enum
-        if (newPlayerForm.posicion === 1) {
-            points = points + (parseInt(newPlayerForm.defense) * 0.1 )
-        } else if (newPlayerForm.posicion === 2) {
-            points = points + (parseInt(newPlayerForm.defense) * 0.1 )  
-        } else if (newPlayerForm.posicion === 3) {
-            points = points + (parseInt(newPlayerForm.middle) * 0.1 )
-        } else {
-            points = points + (parseInt(newPlayerForm.offence) * 0.1 ) 
-        }
+        let totalPoints = calcPoinsPlayer(newPlayerForm);
 
-        const totalPoints = Math.round(points);
-        console.log('totalPoints ',totalPoints)
         const payload = {
             name: newPlayerForm.name,
             mainPosition: newPlayerForm.mainPosition,
@@ -110,30 +90,90 @@ function AdminPlayers(props) {
             totalPoints: totalPoints,
             onTeam: false
         };
+
         setLoading(true);
-        addDoc(collection(db, "players"), payload)
-        .then(()=>{
-            console.log('ok')
+
+        if (isEditingPlayer) {
+
+          const playersRef = collection(db, "players");
+
+          const q = query(playersRef, where("name", "==",  newPlayerForm.name));
+          const querySnapshot = await getDocs(q);
+
+          querySnapshot.forEach(async(documento) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(documento.id, " => ", documento.data());
+            const playersRef = doc(db, "players", documento.id);
+
+            await updateDoc(playersRef, payload);
+
             getPlayersData();
             setLoading(false);
             setNewPlayerForm(initialNewPlayer);
             $('#newPlayerModal').modal('hide');
-        }).catch((err)=>{
-            console.log(err)
-        })
+          });
+
+        } else {
+          addDoc(collection(db, "players"), payload)
+          .then(()=>{
+              console.log('ok')
+              getPlayersData();
+              setLoading(false);
+              setNewPlayerForm(initialNewPlayer);
+              $('#newPlayerModal').modal('hide');
+          }).catch((err)=>{
+              console.log(err)
+          })
+        }
+
+
+    }
+
+    const calcPoinsPlayer = (newPlayer) => {
+      let points =
+          (
+              (parseInt(newPlayer.ability) * 0.5) +
+              (parseInt(newPlayer.resistance) * 0.1) +
+              (parseInt(newPlayer.speed) * 0.1) +
+              (parseInt(newPlayer.powerShoot) * 0.2)
+          );
+
+      //1 arquero - 2 defensa - 3 mediocampista - 4 delantero TODO crear enum
+      if (newPlayer.posicion === 1) {
+          points = points + (parseInt(newPlayer.defense) * 0.1 )
+      } else if (newPlayer.posicion === 2) {
+          points = points + (parseInt(newPlayer.defense) * 0.1 )
+      } else if (newPlayer.posicion === 3) {
+          points = points + (parseInt(newPlayer.middle) * 0.1 )
+      } else {
+          points = points + (parseInt(newPlayer.offence) * 0.1 )
+      }
+
+      return Math.round(points);
     }
 
     const viewPlayer = (playerSelected) => {
-        console.log('view player')
-        console.log('player selected ',playerSelected);
         setViewPlayerSelected(playerSelected);
         $('#showDataPlayer').modal('show');
-        
+
     }
 
     const deletePlayer = () => {
         console.log('delete player')
     }
+
+    const addPlayer =  () => {
+      setIsEditingPlayer(false);
+      $('#newPlayerModal').modal('show');
+    }
+
+    const editPlayer = (player) => {
+        setIsEditingPlayer(true);
+        setNewPlayerForm(player)
+        $('#newPlayerModal').modal('show');
+    }
+
+    editPlayer
 
     const closeModal = () => {
         setNewPlayerForm(initialNewPlayer);
@@ -151,7 +191,7 @@ function AdminPlayers(props) {
 
                         <div className='row'>
                             <div className="col">
-                                <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#newPlayerModal">
+                                <button type="button" className="btn btn-primary mb-2" onClick={addPlayer}>
                                     AGREGAR NUEVO JUGADOR
                                 </button>
                             </div>
@@ -173,7 +213,7 @@ function AdminPlayers(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                         {
                                             allPlayers?.map((player, i)=> {
                                                 let listClass = '';
@@ -189,7 +229,7 @@ function AdminPlayers(props) {
                                                 }
 
                                                 return (
-                                                    
+
                                                     <tr key={i}>
                                                         <th scope="row">{ i+1 }</th>
                                                         <td>{ player.name }</td>
@@ -199,13 +239,17 @@ function AdminPlayers(props) {
                                                             </span>
                                                         </td>
                                                         <td>{ player.totalPoints }</td>
-                                                        <td><a style={{'marginRight': '10px'}} onClick={() => viewPlayer(player)}><i className="fa-regular fa-eye"></i></a><a onClick={deletePlayer}><i className="fa-solid fa-trash"></i></a></td>
+                                                        <td>
+                                                          <a style={{'marginRight': '10px'}} onClick={() => viewPlayer(player)}><i className="fa-regular fa-eye"></i></a>
+                                                          <a style={{'marginRight': '10px'}} onClick={() => editPlayer(player)}><i className="fa-solid fa-edit"></i></a>
+                                                          <a style={{'opacity': '0.1'}} onClick={deletePlayer}><i className="fa-solid fa-trash"></i></a>
+                                                          </td>
                                                     </tr>
-                                                    
+
                                                 )
                                             })
                                         }
-                                    
+
                                 </tbody>
                             </table>
 
@@ -238,7 +282,7 @@ function AdminPlayers(props) {
                                         <div className="bg-primary" style={{ borderRadius: '50%', height: '100px', width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><span style={{ fontSize: '50px'}} className="text-gray-100">{viewPlayerSelected.totalPoints}</span></div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="mb-2">
                                     <div className="mb-1">Habilidad <span className="badge bg-primary rounded-pill">{viewPlayerSelected.ability}</span></div>
                                     <div className="progress">
@@ -300,7 +344,13 @@ function AdminPlayers(props) {
                     <div className="modal-dialog">
                         <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title text-center center">Nuevo Jugador</h5>
+                            { isEditingPlayer &&
+                              <h5 className="modal-title text-center center">Editar Jugador</h5>
+                            }
+
+                            { !isEditingPlayer &&
+                              <h5 className="modal-title text-center center">Nuevo Jugador</h5>
+                            }
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
                         </div>
                         <div className="modal-body">
@@ -333,7 +383,7 @@ function AdminPlayers(props) {
                                     </select>
                                     </div>
                                 </div>
-                                
+
                                 <div className="row">
                                     <div className="col mb-3">
                                     <label className="form-label">Habilidad</label>
@@ -349,7 +399,7 @@ function AdminPlayers(props) {
                                     <div className="col mb-3">
                                     <label className="form-label">Velocidad</label>
                                     <input type="text" className="form-control" name="speed" value={newPlayerForm.speed || ''} onChange={handleInputChange}/>
-                                    </div>                                   
+                                    </div>
                                      <div className="col mb-3">
                                      <label className="form-label">Potencia de disparo</label>
                                     <input type="text" className="form-control" name="powerShoot" value={newPlayerForm.powerShoot || ''} onChange={handleInputChange}/>
@@ -379,7 +429,12 @@ function AdminPlayers(props) {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={closeModal}>Cancelar</button>
-                            <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Agregar</button>
+                            { isEditingPlayer &&
+                              <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Editar</button>
+                            }
+                            { !isEditingPlayer &&
+                              <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Agregar</button>
+                            }
                         </div>
                         </div>
                     </div>
