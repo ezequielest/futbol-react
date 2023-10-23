@@ -8,16 +8,15 @@ function ListTeam(props) {
             <ol className="list-group list-group-numbered">
 
             { props.teamArray.map((player, index) => {
-
                 let listClass = '';
 
-                if (player.posicion === 'Delantero') {
+                if (player.mainPosition === '4') {
                     listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-success';
-                } else if (player.posicion === 'Mediocampista') {
+                } else if (player.mainPosition === '3') {
                     listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-warning';
-                } else if (player.posicion === 'Arquero') {
+                } else if (player.mainPosition === '1') {
                     listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-danger';
-                } else if (player.posicion === 'Defensor') {
+                } else if (player.mainPosition === '2') {
                     listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-primary';
                 }
 

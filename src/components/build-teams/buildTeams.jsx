@@ -17,34 +17,9 @@ function BuildTeam() {
     const [pointsTeamOne, setPointsTeamOne] = useState(0);
     const [pointsTeamTwo, setPointsTeamTwo] = useState(0);
 
-    const [ordenPosiciones, setOrdenPosiciones] = useState(["Arquero", "Defensor", "Medioc.", "Delantero"]);
+    const [ordenPosiciones, setOrdenPosiciones] = useState(["1", "2", "3", "4"]);
 
     const [allPlayers, setAllPlayers] = useState([]);
-
-    /*
-    [
-		{ name: "Alejandro", habilidad: 60, resistencia: 75, velocidad: 55, potenciaDisparo: 70, defensa: 60, medio: 50, ataque: 65, posicion: "Delantero", edad: 46, onTeam: false},
-		{ name: "Claudio",  habilidad: 60, resistencia: 75, velocidad: 65, potenciaDisparo: 40, defensa: 60, medio: 79, ataque: 50, posicion: "Mediocampista", edad: 44, onTeam: false },
-		{ name: "Carlos",  habilidad: 40, resistencia: 80, velocidad: 55, potenciaDisparo: 50, defensa: 90, medio: 50, ataque: 30, posicion: "Defensor", edad: 42, onTeam: false },
-		{ name: "Jona",  habilidad: 85, resistencia: 90, velocidad: 80, potenciaDisparo: 70, defensa: 70, medio: 90, ataque: 80,posicion: "Mediocampista", edad: 26, onTeam: false },
-		{ name: "Lequi",  habilidad: 80, resistencia: 70, velocidad: 70, potenciaDisparo: 40, defensa: 70, medio: 75, ataque: 75, posicion: "Mediocampista", edad: 33, onTeam: false },
-		{ name: "Nico",  habilidad: 80, resistencia: 85, velocidad: 80, potenciaDisparo: 85,defensa: 60, medio: 50, ataque: 90, posicion: "Delantero", edad: 35, onTeam: false },
-		{ name: "David Barr",  habilidad: 92, resistencia: 85, velocidad: 85, potenciaDisparo: 80,defensa: 50, medio: 80, ataque: 90, posicion: "Mediocampista", edad: 34, onTeam: false },
-		{ name: "Martin",  habilidad: 65, resistencia: 82, velocidad: 75, potenciaDisparo: 75, defensa: 85, medio: 40, ataque: 70, posicion: "Defensor", edad: 44, onTeam: false },
-		{ name: "Mati Nez",  habilidad: 50, resistencia: 60, velocidad: 50, potenciaDisparo: 40, defensa: 90, medio: 20, ataque: 40, posicion: "Arquero", edad: 23, onTeam: false },
-		{ name: "Emma",  habilidad:90, resistencia: 30, velocidad: 70, potenciaDisparo: 70, defensa: 60, medio: 70, ataque: 90,posicion: "Mediocampista", edad: 23, onTeam: false },
-		{ name: "Mati Vega",  habilidad: 89, resistencia: 77, velocidad: 80, potenciaDisparo: 70, defensa: 37, medio: 78, ataque: 79, posicion: "Delantero", edad: 34, onTeam: false },
-		{ name: "Lukka",  habilidad: 60, resistencia: 78, velocidad: 75, potenciaDisparo: 70, defensa: 40, medio: 65, ataque: 60, posicion: "Delantero", edad: 23, onTeam: false },
-		{ name: "Facu",  habilidad: 60, resistencia: 60, velocidad: 65, potenciaDisparo: 60, defensa: 95, medio: 40, ataque: 60, posicion: "Arquero", edad: 23, onTeam: false },
-		{ name: "Manu",  habilidad: 85, resistencia: 70, velocidad: 75, potenciaDisparo: 99, defensa: 70, medio: 85, ataque: 90, posicion: "Delantero", edad: 23, onTeam: false },
-        { name: "Lucas L",  habilidad: 65, resistencia: 80, velocidad: 72, potenciaDisparo: 82, defensa: 79, medio: 81, ataque: 78, posicion: "Mediocampista", edad: 27, onTeam: false },
-        { name: "Willy",  habilidad: 70, resistencia: 30, velocidad: 72, potenciaDisparo: 90, defensa: 30, medio: 80, ataque: 90, posicion: "Delantero", edad: 36, onTeam: false },
-        { name: "Marce",  habilidad: 85, resistencia: 70, velocidad: 75, potenciaDisparo: 70, defensa: 30, medio: 80, ataque: 80, posicion: "Delantero", edad: 35, onTeam: false },
-        { name: "Juanito",  habilidad: 80, resistencia: 70, velocidad: 75, potenciaDisparo: 70, defensa: 30, medio: 70, ataque: 80, posicion: "Delantero", edad: 36, onTeam: false },
-        { name: "Mike",  habilidad: 60, resistencia: 60, velocidad: 60, potenciaDisparo: 60, defensa: 50, medio: 50, ataque: 50, posicion: "Delantero", edad: 36, onTeam: false },
-        { name: "Jorge",  habilidad: 60, resistencia: 60, velocidad: 60, potenciaDisparo: 60, defensa: 50, medio: 50, ataque: 50, posicion: "Delantero", edad: 36, onTeam: false },
-        { name: "Juacko",  habilidad: 60, resistencia: 60, velocidad: 60, potenciaDisparo: 60, defensa: 50, medio: 50, ataque: 50, posicion: "Delantero", edad: 36, onTeam: false }
-	] */
 
     let cantSelected = 0;
     let maxPlayers = 12;
@@ -64,7 +39,6 @@ function BuildTeam() {
             const querySnapshot = await getDocs(collection(db, "players"));
             const playersArray = [];
             querySnapshot.forEach((doc) => {
-                console.log(doc.data())
                 playersArray.push(doc.data())
             });
             setAllPlayers(playersArray);
@@ -121,8 +95,12 @@ function BuildTeam() {
         }
       }
 
-    const refresh = ()=> {
+    const resetMondayTeam = ()=> {
         console.log('refresh')
+        setMondayPlayers([]);
+        setTeamOneArray([]);
+        setTeamTwoArray([]);
+        setErrorString('');
     }
 
     const armarEquipos = () => {
@@ -131,6 +109,8 @@ function BuildTeam() {
         let newStateTwo = [];
         let pointsTeamOne = 0
         let pointsTeamTwo = 0;
+
+        setErrorString('');
 
         setMondayPlayers([...resetOnTeam(mondayPlayers)]);
 
@@ -198,6 +178,8 @@ function BuildTeam() {
 
         let pointsTeamOneTemp = 0
         let pointsTeamTwoTemp = 0;
+
+        setErrorString('');
 
         let mondayPlayersTemp = mondayPlayers;
 
@@ -296,8 +278,8 @@ function BuildTeam() {
 	}
 
     const compararPosiciones = (a, b) => {
-        const posicionA = ordenPosiciones.indexOf(a.posicion);
-        const posicionB = ordenPosiciones.indexOf(b.posicion);
+        const posicionA = ordenPosiciones.indexOf(a.mainPosition);
+        const posicionB = ordenPosiciones.indexOf(b.mainPosition);
   
         return posicionA - posicionB;
     }
@@ -458,7 +440,7 @@ function BuildTeam() {
                                 {/* Project Card Example */}
                                 <div className="card shadow mb-4 p-4">
                                     <div className='selection-list'>
-                                        <h1>Lista de selección</h1>
+                                        <h3 className='mb-4'>Lista de selección</h3>
                                         <select name="allPlayers" id="allPlayersSelect" className="form-select all-players" multiple onChange={handleAllPlayersChange}>
                                             {
                                                 allPlayers?.map((player, i)=> {
@@ -467,22 +449,22 @@ function BuildTeam() {
                                             }
                                         </select>
                                         <div>
-                                            {errorString.length > 0 &&
-                                            <span className="alert alert-danger mt-2" style={{ display: 'block'}} role="alert">{errorString}</span>
-                                            }
-                                        </div>
-                                        <div>
                                             <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={addPlayers}>Sumar al lunes</button>
-                                            <button className="btn btn-danger mt-2" onClick={refresh}>Reiniciar selección</button>
+                                            <button className="btn btn-danger mt-2" onClick={resetMondayTeam}>Reiniciar selección</button>
                                         </div>
                                     </div>
+                                </div>
+                                <div>
+                                    {errorString.length > 0 &&
+                                    <span className="alert alert-danger mt-2" style={{ display: 'block'}} role="alert">{errorString}</span>
+                                    }
                                 </div>
                             </div>
 
                             <div className="col-lg-6 col-md-6 mb-4">
                                 { mondayPlayers.length > 0 &&
-                                <div>
-                                <h3>Convocados para el próximo partido 
+                                <div className="card shadow mb-4 p-4">
+                                    <h3 className='mb-4'>Convocados para el próximo partido 
                                     <span className="badge bg-primary rounded-pill">{mondayPlayers.length} / {maxPlayers}</span></h3> 
 	  			                        <ol className="list-group list-group-numbered">
 	                                        {mondayPlayers.map((player, index) => {
@@ -500,10 +482,10 @@ function BuildTeam() {
                                         }
 
 	                                    { mondayPlayers.length === maxPlayers && 
-                                            <>
-                                            <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button> 
-	  						                <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
-                                            </>
+                                            <div>
+                                                <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button> 
+	  						                    <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
+                                            </div>
                                         }
                                 </div>
                                 }
