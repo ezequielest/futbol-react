@@ -1,32 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Sidebar from './components/sidebar/sidebar'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from './components/layout/layout'
 import BuildTeam from './components/build-teams/buildTeams'
+import AdminPlayers from './components/admin-players/admin-players';
 import './App.scss'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  const addPlayers = () => {
-    console.log('addplayer')
-  }
-
-  const refresh = () => {
-    console.log('refresh')
-  }
 
   return (
-    <>
-    <div className='layout-container'>
-      <div className='sidebar-container'>
-        <Sidebar/>
-      </div>
-      <div className='pages-container'>
-        <BuildTeam/>
-      </div>
-    </div>
-    </>
+    <>    
+    <BrowserRouter>
+    <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<BuildTeam/>} />
+          <Route path="admin-players" element={<AdminPlayers />} />
+          <Route path="*" element={<BuildTeam />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+      </>
   )
 }
 

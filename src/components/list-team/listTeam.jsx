@@ -1,40 +1,46 @@
-function ListTeam() {
+import React from "react";
+
+function ListTeam(props) {
     return (
         <>
-        <div class="col-lg-6 col-md-6 mb-4  mt-8">
-            <h2>{ title }</h2> 
-            <ol class="list-group list-group-numbered">
+        <div className="col-lg-12 col-md-6 mb-4  mt-8">
+            <h2>{ props.title }</h2> 
+            <ol className="list-group list-group-numbered">
 
-            { teamArray.map((player, index) => {
-                
+            { props.teamArray.map((player, index) => {
+
                 let listClass = '';
 
                 if (player.posicion === 'Delantero') {
-                    listClass = 'list-group-item-success';
+                    listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-success';
                 } else if (player.posicion === 'Mediocampista') {
-                    listClass = 'list-group-item-warning';
+                    listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-warning';
                 } else if (player.posicion === 'Arquero') {
-                    listClass = 'list-group-item-danger';
+                    listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-danger';
                 } else if (player.posicion === 'Defensor') {
-                    listClass = 'list-group-item-primary';
+                    listClass = 'list-group-item d-flex justify-content-between align-items-start list-group-item-primary';
                 }
 
                 return (
-                <>
-                <li key={index} className="badge bg-primary rounded-pill {listClass}">
-                    {player.nombre} 
-                    <div className="fw-bold">${player.posicion}</div>
-                    <span className="badge bg-primary rounded-pill" style="color: white">${player.totalPoints}</span>
+                <React.Fragment key={index}>
+                <li className={listClass}>
+                    <div className="ms-2 me-auto">
+	   					<div className="fw-bold">{player.name}</div>
+					</div>
+                    <span className="badge bg-primary rounded-pill" style={{color: '#ddd'}}>{player.totalPoints}</span>
                 </li>
-                <li className="list-group-item d-flex justify-content-between align-items-start"><h3>Puntos totales: ${totalPoints}</h3></li>
-                </>
+                </React.Fragment>
                 )
-            
+                
                 })
             }
+
+            { <li className="list-group-item d-flex justify-content-between align-items-start"><h3>Puntos totales: {props.totalPoints}</h3></li>}
             
             </ol>
         </div>
         </>
     )
 }
+
+export default ListTeam

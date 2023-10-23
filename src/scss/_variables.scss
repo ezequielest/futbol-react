@@ -31,7 +31,8 @@ $theme-colors : red;
 $grays: "#ddd";
 $primary: blue;
 
-$color-primary: #36b9cc !important;
+$color-primary: #4e73df !important;
+$color-secondary: #6f42c1 !important;
 
 // Custom Colors
 $brand-google: #ea4335 !default;
@@ -64,7 +65,7 @@ $topbar-base-height: 4.375rem !default;
 // Change below variable to change the width of the sidenav
 $sidebar-base-width: 14rem !default;
 // Change below variable to change the width of the sidenav when collapsed
-$sidebar-collapsed-width: 6.5rem !default;
+$sidebar-collapsed-width: 100% !default;
 
 // Card
 $card-cap-bg: $gray-100 !default;

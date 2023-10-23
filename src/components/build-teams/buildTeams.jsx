@@ -1,16 +1,28 @@
 import React, {useState} from 'react';
+import ListTeam from '../list-team/listTeam';
+import {useEffect} from 'react';
+import { db } from "/src/firebase/firebase.js";
+import { doc, collection, getDocs } from "firebase/firestore"; 
 
 function BuildTeam() {
 
     //const [cantSelected, setCantSelected] = useState(0);
     const [playersSelected, setPlayersSelected] = useState([]);
     const [mondayPlayers, setMondayPlayers] = useState([]); 
-    const [errorString, setErrorString] = useState(''); 
+    const [errorString, setErrorString] = useState('');
 
-    let cantSelected = 0;
-    let maxPlayers = 12;
+    const [teamOneArray, setTeamOneArray] = useState([]); 
+    const [teamTwoArray, setTeamTwoArray] = useState([]); 
 
-    const allPlayers = [
+    const [pointsTeamOne, setPointsTeamOne] = useState(0);
+    const [pointsTeamTwo, setPointsTeamTwo] = useState(0);
+
+    const [ordenPosiciones, setOrdenPosiciones] = useState(["Arquero", "Defensor", "Medioc.", "Delantero"]);
+
+    const [allPlayers, setAllPlayers] = useState([]);
+
+    /*
+    [
 		{ name: "Alejandro", habilidad: 60, resistencia: 75, velocidad: 55, potenciaDisparo: 70, defensa: 60, medio: 50, ataque: 65, posicion: "Delantero", edad: 46, onTeam: false},
 		{ name: "Claudio",  habilidad: 60, resistencia: 75, velocidad: 65, potenciaDisparo: 40, defensa: 60, medio: 79, ataque: 50, posicion: "Mediocampista", edad: 44, onTeam: false },
 		{ name: "Carlos",  habilidad: 40, resistencia: 80, velocidad: 55, potenciaDisparo: 50, defensa: 90, medio: 50, ataque: 30, posicion: "Defensor", edad: 42, onTeam: false },
@@ -32,12 +44,38 @@ function BuildTeam() {
         { name: "Mike",  habilidad: 60, resistencia: 60, velocidad: 60, potenciaDisparo: 60, defensa: 50, medio: 50, ataque: 50, posicion: "Delantero", edad: 36, onTeam: false },
         { name: "Jorge",  habilidad: 60, resistencia: 60, velocidad: 60, potenciaDisparo: 60, defensa: 50, medio: 50, ataque: 50, posicion: "Delantero", edad: 36, onTeam: false },
         { name: "Juacko",  habilidad: 60, resistencia: 60, velocidad: 60, potenciaDisparo: 60, defensa: 50, medio: 50, ataque: 50, posicion: "Delantero", edad: 36, onTeam: false }
-	];
+	] */
+
+    let cantSelected = 0;
+    let maxPlayers = 12;
+
+    useEffect(() => {
+        const players = JSON.parse(localStorage.getItem('players'));
+        setAllPlayers(players);
+
+        if (!players) {
+            getPlayersData();
+        }
+    }, []);
+
+
+    const getPlayersData = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "players"));
+            const playersArray = [];
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                playersArray.push(doc.data())
+            });
+            setAllPlayers(playersArray);
+            localStorage.setItem('players',JSON.stringify(playersArray));
+        } catch (error) {
+            console.error("Error al obtener datos de Firestore:", error);
+        }
+    };
 
     const handleAllPlayersChange = (e) => {
         const options = e.target.options;
-        console.log('e ', e)
-        console.log('options ', options)
         const selected = [];
         for (let i = 0; i < options.length; i++) {
             if (options[i].selected) {
@@ -46,7 +84,6 @@ function BuildTeam() {
         }
 
         setPlayersSelected([...selected]);
-
 	}
 
     const addPlayers = () => {
@@ -79,11 +116,9 @@ function BuildTeam() {
           /*for (var i = 0; i < playersSelected.length; i++) {
               playersSelected.options[i].selected = false;
           }*/
+
+          setPlayersSelected(playersSelected);
         }
-  
-  
-  
-        console.log('mondayPlayers ', mondayPlayers);
       }
 
     const refresh = ()=> {
@@ -91,23 +126,25 @@ function BuildTeam() {
     }
 
     const armarEquipos = () => {
-        console.log('RANDOM -----------------------')
-		teamOneArray = [];
-		teamTwoArray = [];
 
-        mondayPlayers = resetOnTeam(mondayPlayers);
+        let newStateOne = [];
+        let newStateTwo = [];
+        let pointsTeamOne = 0
+        let pointsTeamTwo = 0;
 
-        mondayPlayersRandom = shuffle(mondayPlayers);
+        setMondayPlayers([...resetOnTeam(mondayPlayers)]);
 
-        arqueros = getForPosition('Arquero', mondayPlayersRandom);
-
+        let mondayPlayersRandom = shuffle(mondayPlayers);
+        let arqueros = getForPosition('Arquero', mondayPlayersRandom);
+        
+        //CONSULTA - como actualizar el mismo array a medida que necesito transformarlo, linea 112 y 113 
         if (arqueros) {
             if (arqueros.length > 1) {
-                teamOneArray.push(arqueros[0]);
-                teamTwoArray.push(arqueros[1]);
-
                 arqueros[0].onTeam = true;
                 arqueros[1].onTeam = true;
+
+                newStateOne.push(arqueros[0]);
+                newStateTwo.push(arqueros[1]);
             }
         }
 
@@ -117,22 +154,24 @@ function BuildTeam() {
 
 	  	for (let i = 0; i < restOfPlayers.length; i++) {
 		    if (i % 2 === 0) {
-		      teamOneArray.push(restOfPlayers[i]);
+                newStateOne.push(restOfPlayers[i]);
 		    } else {
-		      teamTwoArray.push(restOfPlayers[i]);
+                newStateTwo.push(restOfPlayers[i]);
 		    }
 		}
 
-		pointsTeamOne = calcTeamPoints(teamOneArray);
-		pointsTeamTwo = calcTeamPoints(teamTwoArray);
+		pointsTeamOne = calcTeamPoints(newStateOne);
+        pointsTeamTwo = calcTeamPoints(newStateTwo);
 
 		let diff = Math.abs(pointsTeamOne - pointsTeamTwo);
-
+        let teams = [];
 		if (pointsTeamOne !== pointsTeamTwo && diff > 30){
             let i = 0;
 			while (diff > 30) {
-				console.log('emparejando');
-				doTeamsEquals(pointsTeamOne, pointsTeamTwo, i);
+				teams = doTeamsEquals(pointsTeamOne, pointsTeamTwo, newStateOne, newStateTwo, i);
+
+                newStateOne = teams[0];
+                newStateTwo = teams[1];
 
 				pointsTeamOne = calcTeamPoints(teamOneArray);
 				pointsTeamTwo = calcTeamPoints(teamTwoArray);
@@ -142,46 +181,207 @@ function BuildTeam() {
 			}
 		};
 
-        teamOneArray = teamOneArray.sort(compararPosiciones);
-        teamTwoArray = teamTwoArray.sort(compararPosiciones);
+        newStateOne.sort(compararPosiciones);
+        newStateTwo.sort(compararPosiciones);
 
-		teamHTML = '';
-		imprimirEquipo(teamOneArray, 'Equipo 1', pointsTeamOne);
-		imprimirEquipo(teamTwoArray, 'Equipo 2', pointsTeamTwo);
+        setPointsTeamOne(pointsTeamOne);
+        setPointsTeamTwo(pointsTeamTwo);
+
+        setTeamOneArray(newStateOne);
+        setTeamTwoArray(newStateTwo);
     }
 
-    function imprimirEquipo(teamArray, title, totalPoints) {
-        teamHTML += '<div class="col-lg-6 col-md-6 mb-4  mt-8">';
-        teamHTML += `<h2>${ title }</h2> 
-                       <ol class="list-group list-group-numbered">`;
-        teamArray.forEach((player, index) => {
+    const armarLaMejorOpcion = () => {
+        console.log('BEST OPTION -----------------------');
+		let teamOneArrayTemp = [];
+		let teamTwoArrayTemp = [];
+
+        let pointsTeamOneTemp = 0
+        let pointsTeamTwoTemp = 0;
+
+        let mondayPlayersTemp = mondayPlayers;
+
+        mondayPlayersTemp = resetOnTeam(mondayPlayersTemp);
+	  
+	  	//obtengo por posicion en la cancha
+	  	let arqueros = getForPosition('Arquero', mondayPlayersTemp).sort((a, b) => b.totalPoints - a.totalPoints);
+	  	let defensores = getForPosition('Defensor', mondayPlayersTemp).sort((a, b) => b.totalPoints - a.totalPoints);
+	  	let mediocampistas = getForPosition('Mediocampista', mondayPlayersTemp).sort((a, b) => b.totalPoints - a.totalPoints);
+	  	let delanteros = getForPosition('Delantero', mondayPlayersTemp).sort((a, b) => b.totalPoints - a.totalPoints);
+
+	  	if (arqueros) {
+		  	if (arqueros.length > 1) {
+		  		teamOneArrayTemp.push(arqueros[0]);
+		  		teamTwoArrayTemp.push(arqueros[1]);
+
+		  		arqueros[0].onTeam = true;
+		  		arqueros[1].onTeam = true;
+
+		  	} else if (arqueros.length === 1) {
+				teamOneArrayTemp.push(arqueros[0]);
+				arqueros[0].onTeam = true;
+
+		  		if (defensores.length > 1) {
+		  			teamTwoArrayTemp.push(defensores[0])
+		  			teamTwoArrayTemp.push(defensores[1])
+		  			defensores[0].onTeam = true;
+		  			defensores[1].onTeam = true;
+
+                    teamOneArrayTemp.push(delanteros[delanteros.length - 1]);
+                    delanteros[delanteros.length-1].onTeam = true;
+
+		  		} else if (defensores.length === 1) {
+		  			//1 defensor y el mejor delantero
+		  			teamTwoArrayTemp.push(defensores[0]);
+		  			teamTwoArrayTemp.push(delanteros[0]);
+		  			defensores[0].onTeam = true;
+		  			delanteros[0].onTeam = true;
+
+                    teamOneArrayTemp.push(delanteros[delanteros.length - 1]);
+                    delanteros[delanteros.length-1].onTeam = true;
+		  		}
+		  	};
+	  	} else {
+	  		mondayPlayersTemp.sort((a, b) => b.totalPoints - a.totalPoints);
+	  	}
+
+	  	let restOfPlayers = mondayPlayersTemp.filter(players => {
+	  		return players.onTeam === false;
+	  	})
+
+        restOfPlayers.sort(compararPosiciones);
+
+        //acomodo el resto de los jugadores
+        for (let i = 0; i < restOfPlayers.length; i++) {
+            if (i % 2 === 0) {
+              teamOneArrayTemp.push(restOfPlayers[i]);
+            } else {
+              teamTwoArrayTemp.push(restOfPlayers[i]);
+            }
+        }
+
+		pointsTeamOneTemp = calcTeamPoints(teamOneArrayTemp);
+		pointsTeamTwoTemp = calcTeamPoints(teamTwoArrayTemp);
+
+		let diff = Math.abs(pointsTeamOneTemp - pointsTeamTwoTemp);
+
+        let teams = [];
+		if (pointsTeamOneTemp !== pointsTeamTwoTemp && diff > 30){
+            let i = 0;
+
+			while (diff > 30 || i === 3) {
+                console.log('pointsTeamOneTemp ',pointsTeamOneTemp)
+				teams = doTeamsEquals(pointsTeamOneTemp, pointsTeamTwoTemp, teamOneArrayTemp, teamTwoArrayTemp, i);
+
+                teamOneArrayTemp = teams[0];
+                teamTwoArrayTemp = teams[1];
+
+				pointsTeamOneTemp = calcTeamPoints(teamOneArrayTemp);
+				pointsTeamTwoTemp = calcTeamPoints(teamTwoArrayTemp);
+
+				diff = Math.abs(pointsTeamOneTemp - pointsTeamTwoTemp);
+                i++;
+			}
+		};
+		
+        teamOneArrayTemp.sort(compararPosiciones);
+        teamTwoArrayTemp.sort(compararPosiciones);
+
+        setPointsTeamOne(pointsTeamOneTemp);
+        setPointsTeamTwo(pointsTeamTwoTemp);
+
+        setTeamOneArray(teamOneArrayTemp);
+        setTeamTwoArray(teamTwoArrayTemp);
+
+	}
+
+    const compararPosiciones = (a, b) => {
+        const posicionA = ordenPosiciones.indexOf(a.posicion);
+        const posicionB = ordenPosiciones.indexOf(b.posicion);
   
-          if (player.posicion === 'Delantero') {
-              teamHTML += `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-success">`
-          } else if (player.posicion === 'Mediocampista') {
-              teamHTML += `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-warning">`
-          }else if (player.posicion === 'Arquero') {
-              teamHTML += `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">`
-          }else if (player.posicion === 'Defensor') {
-              teamHTML += `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-primary">`
-          }
-  
-  
-         teamHTML += `${player.nombre} 
-                             <div class="fw-bold">${player.posicion}</div>
-                          <span class="badge bg-primary rounded-pill" style="color: white">${player.totalPoints}</span>
-                      </li>`;
+        return posicionA - posicionB;
+    }
+
+    //CONSULTA - como actualizar el mismo array a medida que necesito transformarlo, linea 177
+
+    const doTeamsEquals = (pointsTeamOne, pointsTeamTwo, teamOne, teamTwo, index) => {
+
+		//check what is the beast team
+		if ((pointsTeamOne > pointsTeamTwo)) {
+			const getChanges = changePlayer(teamOne, teamTwo, index);
+			teamOne = getChanges[0];
+			teamTwo = getChanges[1];
+		} else {
+			const getChanges = changePlayer(teamTwo, teamOne, index);
+			teamOne = getChanges[1];
+			teamTwo = getChanges[0];
+		}
+
+        return [teamOne, teamTwo];
+	}
+
+    const changePlayer = (bestTeam, worstTeam, index) => {
+        let bestTeamTemp = bestTeam;
+        let worstTeamTemp = worstTeam;
+
+		let bestOfensePlayer = bestTeamTemp.sort((a, b) => b.totalPoints - a.totalPoints)[index];
+		let worstOfensePlayer = worstTeamTemp.sort((a, b) => b.totalPoints - a.totalPoints)[(worstTeamTemp.length-1)-index];
+
+
+        if (bestOfensePlayer === undefined || worstOfensePlayer === undefined) {
+            return [bestTeamTemp,worstTeamTemp];
+        }
+
+		//TEAM ONE IS BEST
+		bestTeamTemp.push(worstOfensePlayer);
+		worstTeamTemp.push(bestOfensePlayer);
+
+		//remove player
+		let bestTeamFinish = bestTeamTemp.filter(player => {
+			return player.name !== bestOfensePlayer.name;
+		});
+
+		let worstTeamFinish = worstTeamTemp.filter(player => {
+			return player.name !== worstOfensePlayer.name;
+		});
+
+		return [bestTeamFinish,worstTeamFinish];
+	}
+
+    const calcTeamPoints = (team) => {
+		let totalPoints = 0;
+		team.forEach( player => {
+			totalPoints += player.totalPoints;
+		})
+		return totalPoints;
+	}
+
+    const getForPosition = (position, teamArray) => {
+        return teamArray.filter(player => {
+            return player.posicion === position;
         });
-        teamHTML += `<li class="list-group-item d-flex justify-content-between align-items-start"><h3>Puntos totales: ${totalPoints}</h3></li>`;
-        teamHTML += `</ol>`;
-        teamHTML += '</div>';
+    }
+
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
   
-        document.getElementById('teamGenerated').innerHTML = teamHTML;
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
   
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+  
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+  
+        return array;
       }
 
     const resetOnTeam = (array) => {
-        updateArray = []
+        let updateArray = []
         array.forEach(player => {
             player.onTeam = false;
             updateArray.push(player)
@@ -200,7 +400,7 @@ function BuildTeam() {
                     <div className="container-fluid mt-4">
 
                         {/* Content Row */}
-                        <div className="row">
+                        <div className="row mb-4">
 
                             {/* Earnings (Monthly) Card Example */}
                             <div className="col-xl-3 col-md-6 mb-4">
@@ -239,9 +439,15 @@ function BuildTeam() {
                             </div>
 
                         </div>
-
                         {/* Content Row */}
-
+        
+                        {/*<div className='row'>
+                            <div className="col">
+                                <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#newPlayerModal">
+                                    AGREGAR NUEVO JUGADOR
+                                </button>
+                            </div>
+                        </div>*/}
 
                         {/* Content Row */}
                         <div className="row">
@@ -255,7 +461,7 @@ function BuildTeam() {
                                         <h1>Lista de selección</h1>
                                         <select name="allPlayers" id="allPlayersSelect" className="form-select all-players" multiple onChange={handleAllPlayersChange}>
                                             {
-                                                allPlayers.map((player, i)=> {
+                                                allPlayers?.map((player, i)=> {
                                                     return <option key={i} value={player.name}>{player.name}</option>;
                                                 })
                                             }
@@ -295,18 +501,24 @@ function BuildTeam() {
 
 	                                    { mondayPlayers.length === maxPlayers && 
                                             <>
-                                            <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick="armarEquipos">Armar equipos parejos random</button> 
-	  						                <button className="btn btn-success mt-2" onclick="armarLaMejorOpcion('best')">Armar mejor opción</button>
+                                            <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button> 
+	  						                <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
                                             </>
                                         }
                                 </div>
                                 }
                             </div>
                         </div>
-
+                        { teamOneArray.length > 0 &&
                         <div className="row" id="teamGenerated">  
-                                <teamList></teamList>
+                            <div className="col">
+                                <ListTeam title={'Team 1'} teamArray={teamOneArray} totalPoints={pointsTeamOne} />
+                            </div>
+                            <div className="col">
+                                <ListTeam title={'Team 2'} teamArray={teamTwoArray} totalPoints={pointsTeamTwo}/>
+                            </div>
                         </div>
+                        }
 
                     </div>
                     {/* /.container-fluid */}
@@ -314,16 +526,24 @@ function BuildTeam() {
                 </div>
                 {/* End of Main Content */}
 
-                {/* Footer */}
-                <footer className="sticky-footer bg-white">
-                    <div className="container my-auto">
-                        <div className="copyright text-center my-auto">
-                            <span>El lunes a la cancha &copy;</span>
+                </div>
+
+                <div className="modal fade" id="newPlayerModal" tabIndex="-1" aria-labelledby="newPlayerModal" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Modal title</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Modal body text goes here.</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Save changes</button>
+                        </div>
                         </div>
                     </div>
-                </footer>
-                {/* End of Footer */}
-
                 </div>
             </>
         

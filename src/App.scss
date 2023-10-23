@@ -5,6 +5,10 @@
     display: flex;
     .sidebar-container {
         min-width: 300px;
+        display: none;
+        @media (min-width: 768px) {
+            display: block;
+        }
     }
 
     .pages-container {
