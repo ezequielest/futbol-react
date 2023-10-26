@@ -1,0 +1,142 @@
+.next-team-container {
+  width: 100%;
+  overflow: hidden;
+
+  @media (min-width: '830px'){
+    height: calc(100vh - 133px);
+  } 
+
+  .title {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 24px;
+    text-align: center;
+    padding: 20px;
+
+    @media (min-width: '375px'){
+      padding: 0;
+      margin-bottom: 60px;
+      margin-top: 60px;
+    } 
+  }
+
+  .team-match-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    @media (min-width: '830px'){
+      flex-direction: row;
+    }
+  }
+}
+
+.team-container {
+  width: 100%;
+  margin-bottom: 60px;
+
+  &:last-child {
+    margin-bottom: 120px;
+  }
+
+  .team-name {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 20px;
+
+    @media (min-width: '375px'){
+        margin-bottom: 40px;
+    }
+  }
+}
+
+.next-team-map {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 530px;
+    min-height: 300px;
+    display: grid;
+    grid-template-columns: 100%;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+
+    /*grid-template-areas:
+      "arquero"
+      "def def"
+      "medio"
+      "del del";*/
+
+    &.team-one {
+      right: 0;
+    }
+
+    &.team-two {
+      left: 0;
+    }
+
+    .row-match {
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    .arquero {
+      grid-area: 'arquero';
+
+      .player i {
+        color: #f73939;
+      }
+    }
+
+    .defensores {
+      grid-area: 'def';
+
+      .player i {
+        color: #3535b5;
+      }
+    }
+
+    .mediocampistas {
+      grid-area: 'medio';
+
+      .player i {
+        color: #f7f74b;
+      }
+    }
+
+    .delanteros {
+      grid-area: 'del';
+
+      .player i {
+        color: #5dd55d
+      }
+    }
+
+    .player {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      i {
+        font-size: 22px;
+      }
+    }
+
+    .balloon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #000;
+      //padding: 15px;
+    }
+
+
+}

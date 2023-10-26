@@ -2,20 +2,23 @@ import React, {useState} from 'react';
 import ListTeam from '../list-team/listTeam';
 import {useEffect} from 'react';
 import { db } from "/src/firebase/firebase.js";
-import { doc, collection, getDocs } from "firebase/firestore"; 
+import { doc, collection, getDocs, setDoc } from "firebase/firestore";
 
 function BuildTeam() {
 
     //const [cantSelected, setCantSelected] = useState(0);
     const [playersSelected, setPlayersSelected] = useState([]);
-    const [mondayPlayers, setMondayPlayers] = useState([]); 
+    const [mondayPlayers, setMondayPlayers] = useState([]);
     const [errorString, setErrorString] = useState('');
 
-    const [teamOneArray, setTeamOneArray] = useState([]); 
-    const [teamTwoArray, setTeamTwoArray] = useState([]); 
+    const [teamOneArray, setTeamOneArray] = useState([]);
+    const [teamTwoArray, setTeamTwoArray] = useState([]);
 
     const [pointsTeamOne, setPointsTeamOne] = useState(0);
     const [pointsTeamTwo, setPointsTeamTwo] = useState(0);
+
+    const [showSuccessSaveTeamMessage, setShowSuccessSaveTeamMessage] = useState(false);
+
 
     const [ordenPosiciones, setOrdenPosiciones] = useState(["1", "2", "3", "4"]);
 
@@ -77,16 +80,16 @@ function BuildTeam() {
                     })
 
                     mondayPlayers.push(player);
-                    
+
                 }
 
                 setMondayPlayers([...mondayPlayers]);
-                
+
             }
 
             setMondayPlayers([...mondayPlayers]);
-  
-           //reset options TODO 
+
+           //reset options TODO
           /*for (var i = 0; i < playersSelected.length; i++) {
               playersSelected.options[i].selected = false;
           }*/
@@ -96,7 +99,6 @@ function BuildTeam() {
       }
 
     const resetMondayTeam = ()=> {
-        console.log('refresh')
         setMondayPlayers([]);
         setTeamOneArray([]);
         setTeamTwoArray([]);
@@ -116,8 +118,8 @@ function BuildTeam() {
 
         let mondayPlayersRandom = shuffle(mondayPlayers);
         let arqueros = getForPosition('Arquero', mondayPlayersRandom);
-        
-        //CONSULTA - como actualizar el mismo array a medida que necesito transformarlo, linea 112 y 113 
+
+        //CONSULTA - como actualizar el mismo array a medida que necesito transformarlo, linea 112 y 113
         if (arqueros) {
             if (arqueros.length > 1) {
                 arqueros[0].onTeam = true;
@@ -184,7 +186,7 @@ function BuildTeam() {
         let mondayPlayersTemp = mondayPlayers;
 
         mondayPlayersTemp = resetOnTeam(mondayPlayersTemp);
-	  
+
 	  	//obtengo por posicion en la cancha
 	  	let arqueros = getForPosition('Arquero', mondayPlayersTemp).sort((a, b) => b.totalPoints - a.totalPoints);
 	  	let defensores = getForPosition('Defensor', mondayPlayersTemp).sort((a, b) => b.totalPoints - a.totalPoints);
@@ -265,7 +267,7 @@ function BuildTeam() {
                 i++;
 			}
 		};
-		
+
         teamOneArrayTemp.sort(compararPosiciones);
         teamTwoArrayTemp.sort(compararPosiciones);
 
@@ -280,7 +282,7 @@ function BuildTeam() {
     const compararPosiciones = (a, b) => {
         const posicionA = ordenPosiciones.indexOf(a.mainPosition);
         const posicionB = ordenPosiciones.indexOf(b.mainPosition);
-  
+
         return posicionA - posicionB;
     }
 
@@ -346,19 +348,19 @@ function BuildTeam() {
 
     function shuffle(array) {
         let currentIndex = array.length,  randomIndex;
-  
+
         // While there remain elements to shuffle.
         while (currentIndex > 0) {
-  
+
           // Pick a remaining element.
           randomIndex = Math.floor(Math.random() * currentIndex);
           currentIndex--;
-  
+
           // And swap it with the current element.
           [array[currentIndex], array[randomIndex]] = [
             array[randomIndex], array[currentIndex]];
         }
-  
+
         return array;
       }
 
@@ -370,6 +372,26 @@ function BuildTeam() {
         })
 
         return updateArray;
+    }
+
+    const saveTeamForNextPlayer = async () => {
+
+        const teamOne = JSON.stringify(teamOneArray);
+        const teamTwo = JSON.stringify(teamTwoArray);
+
+        const jsonTeams = {
+            teamOne,
+            teamTwo
+        }
+
+        setDoc(doc(db, "next-match", "krFHQIrA6som1LX34jlO"), jsonTeams).then(() => {
+            setShowSuccessSaveTeamMessage(true);
+
+            setTimeout(() => {
+              setShowSuccessSaveTeamMessage(false);
+            }, "5000");
+        });
+
     }
 
     return (<>
@@ -422,7 +444,7 @@ function BuildTeam() {
 
                         </div>
                         {/* Content Row */}
-        
+
                         {/*<div className='row'>
                             <div className="col">
                                 <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#newPlayerModal">
@@ -464,8 +486,8 @@ function BuildTeam() {
                             <div className="col-lg-6 col-md-6 mb-4">
                                 { mondayPlayers.length > 0 &&
                                 <div className="card shadow mb-4 p-4">
-                                    <h3 className='mb-4'>Convocados para el próximo partido 
-                                    <span className="badge bg-primary rounded-pill">{mondayPlayers.length} / {maxPlayers}</span></h3> 
+                                    <h3 className='mb-4'>Convocados para el próximo partido
+                                    <span className="badge bg-primary rounded-pill">{mondayPlayers.length} / {maxPlayers}</span></h3>
 	  			                        <ol className="list-group list-group-numbered">
 	                                        {mondayPlayers.map((player, index) => {
 	                                            return <li key={index} className="list-group-item d-flex justify-content-between align-items-start">{player.name}
@@ -477,14 +499,14 @@ function BuildTeam() {
                                             })}
                                         </ol>
 
-                                        { mondayPlayers.length < maxPlayers && 
+                                        { mondayPlayers.length < maxPlayers &&
                                           <h5 className="mt-2">Faltan {maxPlayers - mondayPlayers.length} jugadores</h5>
                                         }
 
-	                                    { mondayPlayers.length === maxPlayers && 
+	                                    { mondayPlayers.length === maxPlayers &&
                                             <div>
-                                                <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button> 
-	  						                    <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
+                                                <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button>
+	  						                                <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
                                             </div>
                                         }
                                 </div>
@@ -492,7 +514,8 @@ function BuildTeam() {
                             </div>
                         </div>
                         { teamOneArray.length > 0 &&
-                        <div className="row" id="teamGenerated">  
+                        <>
+                        <div className="row" id="teamGenerated">
                             <div className="col">
                                 <ListTeam title={'Team 1'} teamArray={teamOneArray} totalPoints={pointsTeamOne} />
                             </div>
@@ -500,6 +523,14 @@ function BuildTeam() {
                                 <ListTeam title={'Team 2'} teamArray={teamTwoArray} totalPoints={pointsTeamTwo}/>
                             </div>
                         </div>
+                        <button className="btn btn-primary mt-2 mb-4" onClick={saveTeamForNextPlayer}>Guardar equipo</button>
+                        
+                        { showSuccessSaveTeamMessage &&
+                            <div class="alert alert-success" role="alert">
+                              Equipo guardado con éxito
+                            </div>
+                        }
+                        </>
                         }
 
                     </div>
@@ -528,7 +559,7 @@ function BuildTeam() {
                     </div>
                 </div>
             </>
-        
+
     )
 
 

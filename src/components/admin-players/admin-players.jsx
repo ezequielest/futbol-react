@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import React, {useState} from 'react';
 import { db } from "/src/firebase/firebase.js";
 import { addDoc, updateDoc, collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
-
+import PlayerCard from './../shared/components/player-card/player-card';
 
 function AdminPlayers(props) {
 
@@ -267,75 +267,7 @@ function AdminPlayers(props) {
             <div className="modal fade" id="showDataPlayer" tabIndex="-1" aria-labelledby="showDataPlayer" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-body">
-                        <div className="card">
-                            <div className="card-body">
-                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-                                    <div style={{ display: 'flex'}} className="mb-3">
-                                        <img src="https://placehold.co/100x100" style={{ marginRight: '20px'}}/>
-                                        <div>
-                                            <h3 className="card-title">{viewPlayerSelected.name}</h3>
-                                            <h6 className="card-subtitle mb-2 text-muted">{getPositionString(viewPlayerSelected.mainPosition)}</h6>
-                                            <p className="card-text"><span className="badge bg-primary rounded-pill">Edad {viewPlayerSelected.age}</span></p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="bg-primary" style={{ borderRadius: '50%', height: '100px', width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><span style={{ fontSize: '50px'}} className="text-gray-100">{viewPlayerSelected.totalPoints}</span></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Habilidad <span className="badge bg-primary rounded-pill">{viewPlayerSelected.ability}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-info w–${viewPlayerSelected.ability}`} style={{ width: viewPlayerSelected.ability + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Resistencia <span className="badge bg-primary rounded-pill">{viewPlayerSelected.resistance}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-info w–${viewPlayerSelected.resistance}`} style={{ width: viewPlayerSelected.resistance + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Velocidad <span className="badge bg-primary rounded-pill">{viewPlayerSelected.speed}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-info w–${viewPlayerSelected.speed}`} style={{ width: viewPlayerSelected.speed + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Potencia de disparo <span className="badge bg-primary rounded-pill">{viewPlayerSelected.powerShoot}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-info w–${viewPlayerSelected.powerShoot}`} style={{ width: viewPlayerSelected.powerShoot + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Puntos como defensor <span className="badge bg-primary rounded-pill">{viewPlayerSelected.defense}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-primary w–${viewPlayerSelected.defense}`} style={{ width: viewPlayerSelected.defense + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Puntos como mediocampista <span className="badge bg-primary rounded-pill">{viewPlayerSelected.middle}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-warning w–${viewPlayerSelected.middle}`} style={{ width: viewPlayerSelected.middle + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-2">
-                                    <div className="mb-1">Puntos como delantero <span className="badge bg-primary rounded-pill">{viewPlayerSelected.offence}</span></div>
-                                    <div className="progress">
-                                        <div className={`progress-bar bg-success w–${viewPlayerSelected.offence}`} style={{ width: viewPlayerSelected.offence + '%'}} role="progressbar" aria-valuenow={viewPlayerSelected.ability} aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-
-                               {/**  <a href="#" className="card-link">Card link</a>
-                                <a href="#" className="card-link">Another link</a>*/}
-                            </div>
-                        </div>
+                        <PlayerCard player={viewPlayerSelected} />
                     </div>
                 </div>
             </div>

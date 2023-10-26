@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import './layout.scss'
 
 function Layout() {
-    return (<>        
+    return (<>
 
 
             <nav className="navbar  bg-primary">
                 <div className="container-fluid">
-                    <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.0.0</sup></strong></div>
+                    <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.1.0</sup></strong></div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                     </button>
@@ -22,10 +22,13 @@ function Layout() {
                         <form className="d-flex mt-3" role="search">
                         <ul className="nav me-auto mb-2 mb-lg-0 mx-4 dropdown-menu-dark">
                             <li className="nav-item">
-                                <Link className="nav-link text-gray-100" to="/">ARMAR EQUIPOS</Link>
+                                <Link className="nav-link text-gray-100" to="/next-team">EQUIPO DEL PROXIMO PARTIDO</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link text-gray-100" to="admin-players">ADMINISTRAR JUGADORES</Link>
+                                <Link className="nav-link text-gray-100" to="/build-team">ARMAR EQUIPOS</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link text-gray-100" to="/admin-players">ADMINISTRAR JUGADORES</Link>
                             </li>
                         </ul>
                         </form>
@@ -41,7 +44,7 @@ function Layout() {
                 <div className='pages-container'>
                 <Outlet />
                 </div>
-            </div> 
+            </div>
 
             {/* Footer */}
             <footer className="sticky-footer bg-primary text-gray-100">
