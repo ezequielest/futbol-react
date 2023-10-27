@@ -4,23 +4,24 @@ import { Link } from "react-router-dom";
 import './layout.scss'
 
 function Layout() {
+    const closeNave = () => {
+        $(".navbar-toggler").click();
+    }
     return (<>
-
-
-            <nav className="navbar  bg-primary">
+            <nav className="navbar  bg-primary" >
                 <div className="container-fluid">
                     <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.1.0</sup></strong></div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
+                        <i class="fa-solid fa-bars"></i>
                     </button>
                     <div className="offcanvas bg-primary offcanvas-end" tabIndex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                     <div className="offcanvas-header">
                         <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.0.0</sup></strong></div>
-                        <button type="button" className="btn-close text-gray-100" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        <i class="fa-solid fa-xmark btn-close" onClick={closeNave}></i>
                     </div>
                     <div className="offcanvas-body">
                         <form className="d-flex mt-3" role="search">
-                        <ul className="nav me-auto mb-2 mb-lg-0 mx-4 dropdown-menu-dark">
+                        <ul className="nav me-auto mb-2 mb-lg-0 mx-4 dropdown-menu-dark" onClick={closeNave}>
                             <li className="nav-item">
                                 <Link className="nav-link text-gray-100" to="/next-team">EQUIPO DEL PROXIMO PARTIDO</Link>
                             </li>
@@ -36,6 +37,7 @@ function Layout() {
                     </div>
                 </div>
                 </nav>
+
 
             <div className='layout-container'>
                 {/*<div className='sidebar-container'>
