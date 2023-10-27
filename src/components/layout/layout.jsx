@@ -12,12 +12,12 @@ function Layout() {
                 <div className="container-fluid">
                     <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.1.0</sup></strong></div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                        <i class="fa-solid fa-bars"></i>
+                        <i className="fa-solid fa-bars"></i>
                     </button>
                     <div className="offcanvas bg-primary offcanvas-end" tabIndex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                     <div className="offcanvas-header">
                         <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.0.0</sup></strong></div>
-                        <i class="fa-solid fa-xmark btn-close" onClick={closeNave}></i>
+                        <i className="fa-solid fa-xmark btn-close" onClick={closeNave}></i>
                     </div>
                     <div className="offcanvas-body">
                         <form className="d-flex mt-3" role="search">

@@ -3,7 +3,7 @@
   overflow: hidden;
 
   @media (min-width: '830px'){
-    height: calc(100vh - 122px);
+    min-height: calc(100vh - 122px);
   } 
 
   .title {

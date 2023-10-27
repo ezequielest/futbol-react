@@ -526,7 +526,7 @@ function BuildTeam() {
                         <button className="btn btn-primary mt-2 mb-4" onClick={saveTeamForNextPlayer}>Guardar equipo</button>
                         
                         { showSuccessSaveTeamMessage &&
-                            <div class="alert alert-success" role="alert">
+                            <div className="alert alert-success" role="alert">
                               Equipo guardado con éxito
                             </div>
                         }
