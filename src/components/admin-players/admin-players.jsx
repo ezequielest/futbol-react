@@ -18,7 +18,6 @@ function AdminPlayers(props) {
         middle: 0,
         offence: 0,
         age: 0,
-        totalPoints: 0,
         onTeam: false
     };
 
@@ -30,12 +29,12 @@ function AdminPlayers(props) {
 
     useEffect(()=>{
 
-        const players = JSON.parse(localStorage.getItem('players'));
-        setAllPlayers(players);
+        //const players = JSON.parse(localStorage.getItem('players'));
+        //setAllPlayers(players);
 
-        if (!players) {
+        //if (!players) {
             getPlayersData();
-        }
+        //}
 
     }, []);
 
@@ -55,7 +54,6 @@ function AdminPlayers(props) {
     };
 
     const handleInputChange = (e) => {
-        console.log(e.target)
         const value = e.target.value;
         const name = e.target.name;
 
@@ -83,10 +81,10 @@ function AdminPlayers(props) {
             speed: newPlayerForm.speed,
             powerShoot: newPlayerForm.powerShoot,
             resistance: newPlayerForm.resistance,
-            defense: newPlayerForm.defense,
-            middle: newPlayerForm.middle,
-            offence: newPlayerForm.offence,
-            age: newPlayerForm.age,
+            defense: parseInt(newPlayerForm.defense),
+            middle: parseInt(newPlayerForm.middle),
+            offence: parseInt(newPlayerForm.offence),
+            age: parseInt(newPlayerForm.age),
             totalPoints: totalPoints,
             onTeam: false
         };
@@ -132,27 +130,28 @@ function AdminPlayers(props) {
     const calcPoinsPlayer = (newPlayer) => {
       let points =
           (
-              (parseInt(newPlayer.ability) * 0.5) +
+              (parseInt(newPlayer.ability) * 0.2) +
               (parseInt(newPlayer.resistance) * 0.1) +
               (parseInt(newPlayer.speed) * 0.1) +
-              (parseInt(newPlayer.powerShoot) * 0.2)
+              (parseInt(newPlayer.powerShoot) * 0.1)
           );
 
       //1 arquero - 2 defensa - 3 mediocampista - 4 delantero TODO crear enum
-      if (newPlayer.posicion === 1) {
-          points = points + (parseInt(newPlayer.defense) * 0.1 )
-      } else if (newPlayer.posicion === 2) {
-          points = points + (parseInt(newPlayer.defense) * 0.1 )
-      } else if (newPlayer.posicion === 3) {
-          points = points + (parseInt(newPlayer.middle) * 0.1 )
+      if (newPlayer.mainPosition === "1") {
+          points = points + (parseInt(newPlayer.defense) * 0.5 )
+      } else if (newPlayer.mainPosition === "2") {
+          points = points + (parseInt(newPlayer.defense) * 0.5 )
+      } else if (newPlayer.mainPosition === "3") {
+          points = points + (parseInt(newPlayer.middle) * 0.5 )
       } else {
-          points = points + (parseInt(newPlayer.offence) * 0.1 )
+          points = points + (parseInt(newPlayer.offence) * 0.5 )
       }
 
       return Math.round(points);
     }
 
     const viewPlayer = (playerSelected) => {
+        console.log('playerSelected ', playerSelected);
         setViewPlayerSelected(playerSelected);
         $('#showDataPlayer').modal('show');
 
@@ -240,10 +239,10 @@ function AdminPlayers(props) {
                                                         </td>
                                                         <td>{ player.totalPoints }</td>
                                                         <td>
-                                                          <a style={{'marginRight': '10px'}} onClick={() => viewPlayer(player)}><i className="fa-regular fa-eye"></i></a>
-                                                          <a style={{'marginRight': '10px'}} onClick={() => editPlayer(player)}><i className="fa-solid fa-edit"></i></a>
-                                                          <a style={{'opacity': '0.1'}} onClick={deletePlayer}><i className="fa-solid fa-trash"></i></a>
-                                                          </td>
+                                                        <a style={{'marginRight': '10px'}} onClick={() => viewPlayer(player)}><i className="fa-regular fa-eye"></i></a>
+                                                        {/*<a style={{'marginRight': '10px'}} onClick={() => editPlayer(player)}><i className="fa-solid fa-edit"></i></a>*/}
+                                                        <a style={{'opacity': '0.1'}} onClick={deletePlayer}><i className="fa-solid fa-trash"></i></a>
+                                                        </td>
                                                     </tr>
 
                                                 )

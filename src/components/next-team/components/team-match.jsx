@@ -1,6 +1,4 @@
-import PlayerCard from './../../shared/components/player-card/player-card'
 import React, {useState} from 'react';
-import {useEffect} from 'react';
 
 function TeamMatch(props) {
 
@@ -11,24 +9,14 @@ function TeamMatch(props) {
     const [delanteros, setDelanteros] = useState({});
 
     const seeDetails = (player) => {
-       console.log(player)
-       setViewPlayerSelected(player);
-       //$('#showDataPlayer').modal('show');
+      props.playerSelected(player);
     }
-
-    /*useEffect(()=> {
-      console.log(viewPlayerSelected)
-
-      $('#showDataPlayer').modal('show');
-      
-      
-    }, [viewPlayerSelected])*/
 
     return (<>
               <div className="team-container">
                     <h3 className='team-name'>{props.teamName}</h3>
                     <div className="next-team-map team-one">
-         
+
                       <div className="row-match arquero">
                         { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '1') {
@@ -39,7 +27,7 @@ function TeamMatch(props) {
                           }
                         })}
                       </div>
- 
+
                       <div className="row-match defensores">
                       { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '2') {
@@ -51,7 +39,7 @@ function TeamMatch(props) {
                         })
                       }
                       </div>
-           
+
                       <div className="row-match mediocampistas">
                       { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '3') {
@@ -62,7 +50,7 @@ function TeamMatch(props) {
                           }
                         })}
                       </div>
-                      
+
                       <div className="row-match delanteros">
                       { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '4') {
@@ -74,19 +62,9 @@ function TeamMatch(props) {
                           }
                         })}
                       </div>
-                      
+
                     </div>
               </div>
-
-              <div className="modal fade" id="showDataPlayer" tabIndex="-1" aria-labelledby="showDataPlayer" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-body">
-                        <PlayerCard player={viewPlayerSelected} />
-                    </div>
-                </div>
-              </div>
-
-
             </>
 
     )

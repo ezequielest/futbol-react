@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import appVersion from "/src/core/config";
 
 function Sidebar() {
     return (<>
@@ -8,7 +9,7 @@ function Sidebar() {
                     <div className="sidebar-brand-icon rotate-n-15">
                         <i className="fas fa-futbol"></i>
                     </div>
-                    <div className="sidebar-brand-text mx-3">LA CANCHA <sup>2.0.0</sup></div>
+                    <div className="sidebar-brand-text mx-3">LA CANCHA <sup>{ appVersion }</sup></div>
                 </a>
 
                 <hr className="sidebar-divider my-0" />

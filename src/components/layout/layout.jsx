@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from '../sidebar/sidebar';
 import { Link } from "react-router-dom";
 import './layout.scss'
+import appVersion from "/src/core/config";
 
 function Layout() {
     const closeNave = () => {
@@ -10,7 +11,7 @@ function Layout() {
     return (<>
             <nav className="navbar  bg-primary" >
                 <div className="container-fluid">
-                    <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>2.1.0</sup></strong></div>
+                    <div className="sidebar-brand-text text-gray-100 mx-3"><strong>LA CANCHA <sup>{ appVersion }</sup></strong></div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                         <i className="fa-solid fa-bars"></i>
                     </button>

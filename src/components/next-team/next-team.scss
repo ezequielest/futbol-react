@@ -1,10 +1,61 @@
+header {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+  padding: 0 20px;
+
+  a:first-child {
+    margin-right: 10px;
+  }
+}
+
+.without-next-team {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    text-align: center;
+
+    a {
+      margin-top: 20px;
+    }
+  }
+}
+
 .next-team-container {
   width: 100%;
   overflow: hidden;
 
   @media (min-width: '830px'){
     min-height: calc(100vh - 122px);
-  } 
+  }
+
+  .result-container {
+    .players-chosen {
+      margin: 0 40px;
+    }
+
+    .results {
+      margin: 40px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 20px;
+      background-color: #3a59b7;
+      color: white;
+
+      .team {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
+  }
+  }
 
   .title {
     display: flex;
@@ -21,7 +72,7 @@
       padding: 0;
       margin-bottom: 60px;
       margin-top: 60px;
-    } 
+    }
   }
 
   .team-match-container {
@@ -31,6 +82,14 @@
 
     @media (min-width: '830px'){
       flex-direction: row;
+    }
+
+    .set-win-form {
+      padding: 20px;
+
+      a {
+        margin-top: 10px;
+      }
     }
   }
 }
@@ -139,4 +198,27 @@
     }
 
 
+}
+
+.finish-team-form {
+  padding: 20px;
+
+  a {
+    margin-top: 20px;
+
+    &.cancel {
+      margin-right: 10px;
+    }
+  }
+}
+
+.options-player-set {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+
+  a{
+    width: 45%;
+  }
 }

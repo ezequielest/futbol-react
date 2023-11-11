@@ -74,9 +74,6 @@ return (
                     <div className={`progress-bar bg-success w–${props.player.offence}`} style={{ width: props.player.offence + '%'}} role="progressbar" aria-valuenow={props.player.ability} aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
-
-           {/**  <a href="#" className="card-link">Card link</a>
-            <a href="#" className="card-link">Another link</a>*/}
         </div>
     </div>)
 }

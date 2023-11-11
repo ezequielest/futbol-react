@@ -3,6 +3,7 @@ import ListTeam from '../list-team/listTeam';
 import {useEffect} from 'react';
 import { db } from "/src/firebase/firebase.js";
 import { doc, collection, getDocs, setDoc } from "firebase/firestore";
+import { useNavigate  } from "react-router-dom";
 
 function BuildTeam() {
 
@@ -23,17 +24,18 @@ function BuildTeam() {
     const [ordenPosiciones, setOrdenPosiciones] = useState(["1", "2", "3", "4"]);
 
     const [allPlayers, setAllPlayers] = useState([]);
+    const Navigate = useNavigate();
 
     let cantSelected = 0;
     let maxPlayers = 12;
 
     useEffect(() => {
-        const players = JSON.parse(localStorage.getItem('players'));
-        setAllPlayers(players);
+       // const players = JSON.parse(localStorage.getItem('players'));
+        //setAllPlayers(players);
 
-        if (!players) {
+        //if (!players) {
             getPlayersData();
-        }
+        //}
     }, []);
 
 
@@ -155,8 +157,8 @@ function BuildTeam() {
                 newStateOne = teams[0];
                 newStateTwo = teams[1];
 
-				pointsTeamOne = calcTeamPoints(teamOneArray);
-				pointsTeamTwo = calcTeamPoints(teamTwoArray);
+				pointsTeamOne = calcTeamPoints(newStateOne);
+				pointsTeamTwo = calcTeamPoints(newStateTwo);
 
 				diff = Math.abs(pointsTeamOne - pointsTeamTwo);
                 i++;
@@ -166,6 +168,8 @@ function BuildTeam() {
         newStateOne.sort(compararPosiciones);
         newStateTwo.sort(compararPosiciones);
 
+        console.log('pointsTeamOne', pointsTeamOne)
+        console.log('pointsTeamTwo', pointsTeamTwo)
         setPointsTeamOne(pointsTeamOne);
         setPointsTeamTwo(pointsTeamTwo);
 
@@ -271,6 +275,8 @@ function BuildTeam() {
         teamOneArrayTemp.sort(compararPosiciones);
         teamTwoArrayTemp.sort(compararPosiciones);
 
+        console.log('pointsTeamOne', pointsTeamOne)
+        console.log('pointsTeamTwo', pointsTeamTwo)
         setPointsTeamOne(pointsTeamOneTemp);
         setPointsTeamTwo(pointsTeamTwoTemp);
 
@@ -387,6 +393,8 @@ function BuildTeam() {
         setDoc(doc(db, "next-match", "krFHQIrA6som1LX34jlO"), jsonTeams).then(() => {
             setShowSuccessSaveTeamMessage(true);
 
+            Navigate("/next-team");
+
             setTimeout(() => {
               setShowSuccessSaveTeamMessage(false);
             }, "5000");
@@ -402,57 +410,7 @@ function BuildTeam() {
 
                     {/* Begin Page Content */}
                     <div className="container-fluid mt-4">
-
-                        {/* Content Row */}
-                        <div className="row mb-4">
-
-                            {/* Earnings (Monthly) Card Example */}
-                            <div className="col-xl-3 col-md-6 mb-4">
-                                <div className="card border-left-primary shadow h-100 py-2">
-                                    <div className="card-body">
-                                        <div className="row no-gutters align-items-center">
-                                            <div className="col mr-2">
-                                                <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                    mejor jugador</div>
-                                                <div className="h5 mb-0 font-weight-bold text-gray-800">Jere Quinteros</div>
-                                            </div>
-                                            <div className="col-auto">
-                                                <i className="fas fa-trophy fa-2x text-gray-300"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Earnings (Monthly) Card Example */}
-                            <div className="col-xl-3 col-md-6 mb-4">
-                                <div className="card border-left-success shadow h-100 py-2">
-                                    <div className="card-body">
-                                        <div className="row no-gutters align-items-center">
-                                            <div className="col mr-2">
-                                                <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                    MAS PICANTE</div>
-                                                <div className="h5 mb-0 font-weight-bold text-gray-800">El pela</div>
-                                            </div>
-                                            <div className="col-auto">
-                                                <i className="fas fa-pepper-hot fa-2x text-gray-300"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        {/* Content Row */}
-
-                        {/*<div className='row'>
-                            <div className="col">
-                                <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#newPlayerModal">
-                                    AGREGAR NUEVO JUGADOR
-                                </button>
-                            </div>
-                        </div>*/}
-
+                    
                         {/* Content Row */}
                         <div className="row">
 
@@ -506,7 +464,7 @@ function BuildTeam() {
 	                                    { mondayPlayers.length === maxPlayers &&
                                             <div>
                                                 <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button>
-	  						                                <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
+	  						                    {/*<button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>*/}
                                             </div>
                                         }
                                 </div>

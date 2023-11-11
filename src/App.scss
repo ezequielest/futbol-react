@@ -3,12 +3,18 @@
 
 .layout-container {
     display: flex;
+    min-height: calc(100vh - 122px);
+    
     .sidebar-container {
         min-width: 300px;
         display: none;
         @media (min-width: 768px) {
             display: block;
         }
+    }
+
+    .content-wrapper {
+        height: 100%;
     }
 
     .pages-container {
