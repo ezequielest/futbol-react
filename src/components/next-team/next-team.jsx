@@ -6,6 +6,7 @@ import './next-team.scss'
 import TeamMatch from './components/team-match';
 import PlayerCard from '/src/components/shared/components/player-card/player-card';
 import { useNavigate  } from "react-router-dom";
+import {calcPoinsPlayer} from '/src/components/shared/player-service';
 
 function NextTeam() {
 
@@ -186,7 +187,7 @@ function NextTeam() {
       setMatchResultForm ({});
     }
 
-    const addPoints = async (player, localResultMatch, visitingResultMatch) =>  {
+    const addPoints = async (player) =>  {
 
       const q = query(collection(db, "players"), where("name", "==", player.name));
       const querySnapshot = await getDocs(q);
@@ -196,25 +197,40 @@ function NextTeam() {
         const player = doc(db, "players", document.id);
 
         let playerTemp =  playerData;
-        console.log(playerTemp.name + 'gano puntos')
-        playerTemp.ability = playerData.ability + 2 > 99 ? 99 : parseInt(playerData.ability) + 2;
-        playerTemp.powerShoot = playerData.powerShoot === 99 ? 99 : parseInt(playerData.powerShoot) + 1;
-        playerTemp.resistance = playerData.resistance === 99 ? 99 : parseInt(playerData.resistance) + 1;
-        playerTemp.speed = playerData.speed === 99 ? 99 : parseInt(playerData.speed) + 1;
 
+        if (playerTemp.mainPosition === '1') {
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+        } else if (playerTemp.mainPosition === '2'){
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+        } else if (playerTemp.mainPosition === '3') {
+          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + 2;
+        } else if (playerTemp.mainPosition === '4') {
+          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + 2;
+        }
+
+        if (playerTemp.secondaryPosition === '1') {
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+        } else if (playerTemp.secondaryPosition === '2'){
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+        } else if (playerTemp.secondaryPosition === '3') {
+          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + 2;
+        } else if (playerTemp.secondaryPosition === '4') {
+          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + 2;
+        }
+
+        console.log('player temp ', playerTemp)
         const totalPoints = calcPoinsPlayer(playerTemp);
-
+        console.log('totalPoints ', totalPoints)
         updateDoc(player, {
-          ability:      playerTemp.ability,
-          powerShoot:   playerTemp.powerShoot,
-          resistance:   playerTemp.resistance,
-          speed:        playerTemp.speed,
+          defense:      playerTemp.defense,
+          middle:       playerTemp.middle,
+          offence:      playerTemp.offence,
           totalPoints:  totalPoints
         });
       })
     }
 
-    const removePoints = async (player, localResultMatch, visitingResultMatch) =>  {
+    const removePoints = async (player) =>  {
 
       const q = query(collection(db, "players"), where("name", "==", player.name));
       const querySnapshot = await getDocs(q);
@@ -225,44 +241,35 @@ function NextTeam() {
 
           let playerTemp =  playerData;
 
-          playerTemp.ability = playerData.ability - 2 < 0 ? 0 : parseInt(playerData.ability) - 2;
-          playerTemp.powerShoot = playerData.powerShoot- 1 < 0 ? 0 : parseInt(playerData.powerShoot) - 1;
-          playerTemp.resistance = playerData.resistance - 1 < 0 ? 0: parseInt(playerData.resistance) - 1;
-          playerTemp.speed = playerData.speed - 1 < 0 ? 0: parseInt(playerData.speed) - 1;
+          if (playerTemp.mainPosition === '1') {
+            playerTemp.defense = playerData.defense - 2 < 0 ? 0 : parseInt(playerData.defense) - 2;
+          } else if (playerTemp.mainPosition === '2'){
+            playerTemp.defense = playerData.defense - 2 < 0 ? 0 : parseInt(playerData.defense) - 2;
+          } else if (playerTemp.mainPosition === '3') {
+            playerTemp.middle = playerData.middle - 2 < 0 ? 0 : parseInt(playerData.middle) - 2;
+          } else if (playerTemp.mainPosition === '4') {
+            playerTemp.offence = playerData.offence - 2 < 0 ? 0 : parseInt(playerData.offence) - 2;
+          }
+
+          if (playerTemp.secondaryPosition === '1') {
+            playerTemp.defense = playerData.defense - 2 < 0 ? 0 : parseInt(playerData.defense) - 2;
+          } else if (playerTemp.secondaryPosition === '2'){
+            playerTemp.defense = playerData.defense - 2 < 0 ? 0 : parseInt(playerData.defense) - 2;
+          } else if (playerTemp.secondaryPosition === '3') {
+            playerTemp.middle = playerData.middle - 2 < 0 ? 0 : parseInt(playerData.middle) - 2;
+          } else if (playerTemp.secondaryPosition === '4') {
+            playerTemp.offence = playerData.offence - 2 < 0 ? 0 : parseInt(playerData.offence) - 2;
+          }
 
           const totalPoints = calcPoinsPlayer(playerTemp);
 
           updateDoc(player, {
-            ability:      playerTemp.ability,
-            powerShoot:   playerTemp.powerShoot,
-            resistance:   playerTemp.resistance,
-            speed:        playerTemp.speed,
+            defense:      playerTemp.defense,
+            middle:       playerTemp.middle,
+            offence:      playerTemp.offence,
             totalPoints:  totalPoints
           });
       })
-    }
-
-    const calcPoinsPlayer = (newPlayer) => {
-      let points =
-          (
-              (parseInt(newPlayer.ability) * 0.5) +
-              (parseInt(newPlayer.resistance) * 0.1) +
-              (parseInt(newPlayer.speed) * 0.1) +
-              (parseInt(newPlayer.powerShoot) * 0.2)
-          );
-
-      //1 arquero - 2 defensa - 3 mediocampista - 4 delantero TODO crear enum
-      if (newPlayer.posicion === 1) {
-          points = points + (parseInt(newPlayer.defense) * 0.1 )
-      } else if (newPlayer.posicion === 2) {
-          points = points + (parseInt(newPlayer.defense) * 0.1 )
-      } else if (newPlayer.posicion === 3) {
-          points = points + (parseInt(newPlayer.middle) * 0.1 )
-      } else {
-          points = points + (parseInt(newPlayer.offence) * 0.1 )
-      }
-
-      return Math.round(points);
     }
 
 
@@ -324,13 +331,13 @@ function NextTeam() {
 
           let playerTemp =  playerData;
 
-          playerTemp.ability = playerData.ability + 2 > 99 ? 99 : parseInt(playerData.ability) - 2;
-          playerTemp.powerShoot = playerData.powerShoot === 99 ? 99 : parseInt(playerData.powerShoot) - 1;
-          playerTemp.resistance = playerData.resistance === 99 ? 99 : parseInt(playerData.resistance) - 1;
-          playerTemp.speed = playerData.speed === 99 ? 99 : parseInt(playerData.speed) - 1;
-  
+          playerTemp.ability = playerData.ability - 2 < 0 ? 0 : parseInt(playerData.ability) - 2;
+          playerTemp.powerShoot = playerData.powerShoot- 1 < 0 ? 0 : parseInt(playerData.powerShoot) - 1;
+          playerTemp.resistance = playerData.resistance - 1 < 0 ? 0: parseInt(playerData.resistance) - 1;
+          playerTemp.speed = playerData.speed - 1 < 0 ? 0: parseInt(playerData.speed) - 1;
+
           const totalPoints = calcPoinsPlayer(playerTemp);
-  
+
           updateDoc(player, {
             ability:      playerTemp.ability,
             powerShoot:   playerTemp.powerShoot,

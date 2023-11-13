@@ -17,6 +17,7 @@ function BuildTeam() {
 
     const [pointsTeamOne, setPointsTeamOne] = useState(0);
     const [pointsTeamTwo, setPointsTeamTwo] = useState(0);
+    const [maxPlayers, setMaxPlayers] = useState(12);
 
     const [showSuccessSaveTeamMessage, setShowSuccessSaveTeamMessage] = useState(false);
 
@@ -27,7 +28,6 @@ function BuildTeam() {
     const Navigate = useNavigate();
 
     let cantSelected = 0;
-    let maxPlayers = 12;
 
     useEffect(() => {
        // const players = JSON.parse(localStorage.getItem('players'));
@@ -64,6 +64,12 @@ function BuildTeam() {
 
         setPlayersSelected([...selected]);
 	}
+
+    const handleMaxPlayers = (e) => {
+        const value = parseInt(e.target.value);
+        setMaxPlayers(value);
+        resetMondayTeam();
+    }
 
     const addPlayers = () => {
         if ((playersSelected.length + mondayPlayers.length) > maxPlayers) {
@@ -404,13 +410,26 @@ function BuildTeam() {
 
     return (<>
                 <div id="content-wrapper" className="d-flex flex-column">
+                {/* Main Content */}
+                <div id="content">
+
+                    {/* Begin Page Content */}
+                    <div className="container-fluid md-6">
+                        <div className='row'>
+                            <div className='col-md-6'>
+                                <label className='mt-4 mb-2'>Cantidad de jugadores</label>
+                                <input type="number" name="maxPlayers" className='form-control' value={maxPlayers} onChange={handleMaxPlayers}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Main Content */}
                 <div id="content">
 
                     {/* Begin Page Content */}
                     <div className="container-fluid mt-4">
-                    
+
                         {/* Content Row */}
                         <div className="row">
 
@@ -464,7 +483,7 @@ function BuildTeam() {
 	                                    { mondayPlayers.length === maxPlayers &&
                                             <div>
                                                 <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={armarEquipos}>Armar equipos parejos random</button>
-	  						                    {/*<button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>*/}
+	  						                    <button className="btn btn-success mt-2" onClick={armarLaMejorOpcion}>Armar mejor opción</button>
                                             </div>
                                         }
                                 </div>

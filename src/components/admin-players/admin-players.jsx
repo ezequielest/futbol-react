@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import { db } from "/src/firebase/firebase.js";
 import { addDoc, updateDoc, collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
 import PlayerCard from './../shared/components/player-card/player-card';
+import { calcPoinsPlayer } from '/src/components/shared/player-service';
 
 function AdminPlayers(props) {
 
@@ -72,15 +73,15 @@ function AdminPlayers(props) {
     const saveChange = async () => {
 
         let totalPoints = calcPoinsPlayer(newPlayerForm);
-
+        console.log('saveChange ', newPlayerForm)
         const payload = {
             name: newPlayerForm.name,
             mainPosition: newPlayerForm.mainPosition,
             secondaryPosition: newPlayerForm.secondaryPosition,
-            ability: newPlayerForm.ability,
-            speed: newPlayerForm.speed,
-            powerShoot: newPlayerForm.powerShoot,
-            resistance: newPlayerForm.resistance,
+            ability: parseInt(newPlayerForm.ability),
+            speed: parseInt(newPlayerForm.speed),
+            powerShoot: parseInt(newPlayerForm.powerShoot),
+            resistance: parseInt(newPlayerForm.resistance),
             defense: parseInt(newPlayerForm.defense),
             middle: parseInt(newPlayerForm.middle),
             offence: parseInt(newPlayerForm.offence),
@@ -127,28 +128,6 @@ function AdminPlayers(props) {
 
     }
 
-    const calcPoinsPlayer = (newPlayer) => {
-      let points =
-          (
-              (parseInt(newPlayer.ability) * 0.2) +
-              (parseInt(newPlayer.resistance) * 0.1) +
-              (parseInt(newPlayer.speed) * 0.1) +
-              (parseInt(newPlayer.powerShoot) * 0.1)
-          );
-
-      //1 arquero - 2 defensa - 3 mediocampista - 4 delantero TODO crear enum
-      if (newPlayer.mainPosition === "1") {
-          points = points + (parseInt(newPlayer.defense) * 0.5 )
-      } else if (newPlayer.mainPosition === "2") {
-          points = points + (parseInt(newPlayer.defense) * 0.5 )
-      } else if (newPlayer.mainPosition === "3") {
-          points = points + (parseInt(newPlayer.middle) * 0.5 )
-      } else {
-          points = points + (parseInt(newPlayer.offence) * 0.5 )
-      }
-
-      return Math.round(points);
-    }
 
     const viewPlayer = (playerSelected) => {
         console.log('playerSelected ', playerSelected);
@@ -171,8 +150,6 @@ function AdminPlayers(props) {
         setNewPlayerForm(player)
         $('#newPlayerModal').modal('show');
     }
-
-    editPlayer
 
     const closeModal = () => {
         setNewPlayerForm(initialNewPlayer);
@@ -240,7 +217,7 @@ function AdminPlayers(props) {
                                                         <td>{ player.totalPoints }</td>
                                                         <td>
                                                         <a style={{'marginRight': '10px'}} onClick={() => viewPlayer(player)}><i className="fa-regular fa-eye"></i></a>
-                                                        {/*<a style={{'marginRight': '10px'}} onClick={() => editPlayer(player)}><i className="fa-solid fa-edit"></i></a>*/}
+                                                        <a style={{'marginRight': '10px'}} onClick={() => editPlayer(player)}><i className="fa-solid fa-edit"></i></a>
                                                         <a style={{'opacity': '0.1'}} onClick={deletePlayer}><i className="fa-solid fa-trash"></i></a>
                                                         </td>
                                                     </tr>
@@ -297,7 +274,7 @@ function AdminPlayers(props) {
                                 <div className="row">
                                     <div className="col mb-3">
                                     <label className="form-label">Posicion principal</label>
-                                    <select id="mainPosition" name="mainPosition" className="form-select" onChange={handleInputChange}>
+                                    <select id="mainPosition" name="mainPosition" className="form-select" value={newPlayerForm.mainPosition || 1} onChange={handleInputChange}>
                                         <option value="1">Arquero</option>
                                         <option value="2">Defensa</option>
                                         <option value="3">Mediocampoista</option>
@@ -306,7 +283,7 @@ function AdminPlayers(props) {
                                     </div>
                                     <div className="col mb-3">
                                     <label className="form-label">Posicion secundaria</label>
-                                    <select id="secondaryPosition" name="secondaryPosition" className="form-select" onChange={handleInputChange}>
+                                    <select id="secondaryPosition" name="secondaryPosition" className="form-select" value={newPlayerForm.secondaryPosition || 1} onChange={handleInputChange}>
                                         <option value="1">Arquero</option>
                                         <option value="2">Defensa</option>
                                         <option value="3">Mediocampoista</option>
