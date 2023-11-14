@@ -4,6 +4,7 @@ import { db } from "/src/firebase/firebase.js";
 import { addDoc, updateDoc, collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
 import PlayerCard from './../shared/components/player-card/player-card';
 import { calcPoinsPlayer } from '/src/components/shared/player-service';
+import UploadImage from '/src/components/shared/components/upload-image/upload-image';
 
 function AdminPlayers(props) {
 
@@ -253,16 +254,38 @@ function AdminPlayers(props) {
                         <div className="modal-content">
                         <div className="modal-header">
                             { isEditingPlayer &&
-                              <h5 className="modal-title text-center center">Editar Jugador</h5>
+                                <h5 className="modal-title text-center center">Editar Jugador</h5>
                             }
 
                             { !isEditingPlayer &&
-                              <h5 className="modal-title text-center center">Nuevo Jugador</h5>
+                                <h5 className="modal-title text-center center">Nuevo Jugador</h5>
                             }
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
                         </div>
                         <div className="modal-body">
                             <form className='container'>
+
+                                { isEditingPlayer &&
+                                (<>
+                                <div className="row">
+                                    <div className="col-12">
+                                        showing image
+                                    </div>
+                                </div>
+                                </>
+                                )
+                                }
+
+                                { !isEditingPlayer &&
+                                (<>
+                                <div className="row">
+                                    <div className="col-12">
+                                        <UploadImage />
+                                    </div>
+                                </div>
+                                </>
+                                )
+                                }
 
                                 <div className="row">
                                     <div className="col mb-3">
