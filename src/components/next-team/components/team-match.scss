@@ -1,4 +1,23 @@
+
 .avatar-player {
-    height: 50px;
     width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: white;
+    border: 1px solid #777;
+    object-fit: scale-down;
+    margin-bottom: 2px;
+
+    &.placeholder {
+        background-color: grey;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+    }
+}
+
+.name {
+    margin-bottom: 20px;
+    text-align: center;
 }

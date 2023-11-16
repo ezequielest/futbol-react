@@ -295,13 +295,13 @@ function NextTeam() {
 
             let playerTemp =  playerData;
 
-            playerTemp.ability = playerData.ability + 2 > 99 ? 99 : parseInt(playerData.ability) + 2;
-            playerTemp.powerShoot = playerData.powerShoot === 99 ? 99 : parseInt(playerData.powerShoot) + 1;
-            playerTemp.resistance = playerData.resistance === 99 ? 99 : parseInt(playerData.resistance) + 1;
-            playerTemp.speed = playerData.speed === 99 ? 99 : parseInt(playerData.speed) + 1;
-    
+            playerTemp.ability = playerData.ability + 1 > 99 ? 99 : parseInt(playerData.ability) + 1;
+            playerTemp.powerShoot = playerData.powerShoot + 1 > 99 ? 99 : parseInt(playerData.powerShoot) + 1;
+            playerTemp.resistance = playerData.resistance + 1 > 99 ? 99 : parseInt(playerData.resistance) + 1;
+            playerTemp.speed = playerData.speed + 1 > 99 ? 99 : parseInt(playerData.speed) + 1;
+
             const totalPoints = calcPoinsPlayer(playerTemp);
-    
+
             updateDoc(player, {
               ability:      playerTemp.ability,
               powerShoot:   playerTemp.powerShoot,
@@ -331,7 +331,7 @@ function NextTeam() {
 
           let playerTemp =  playerData;
 
-          playerTemp.ability = playerData.ability - 2 < 0 ? 0 : parseInt(playerData.ability) - 2;
+          playerTemp.ability = playerData.ability - 1 < 0 ? 0 : parseInt(playerData.ability) - 1;
           playerTemp.powerShoot = playerData.powerShoot- 1 < 0 ? 0 : parseInt(playerData.powerShoot) - 1;
           playerTemp.resistance = playerData.resistance - 1 < 0 ? 0: parseInt(playerData.resistance) - 1;
           playerTemp.speed = playerData.speed - 1 < 0 ? 0: parseInt(playerData.speed) - 1;

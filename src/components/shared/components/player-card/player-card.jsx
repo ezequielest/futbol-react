@@ -14,8 +14,8 @@ return (
         <div className="card-body">
             <div style={{ display: 'flex', justifyContent: 'space-between'}}>
                 <div style={{ display: 'flex'}} className="mb-3">
-                    { props.player.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + props.player.image} />}
-                    { !props.player.image && props.player.name && <div className="avatar-player placeholder">{props.player.name[0] }</div>}
+                    { props.player.image && <img className="avatar-player-card" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + props.player.image} />}
+                    { !props.player.image && props.player.name && <div className="avatar-player-card placeholder">{props.player.name[0] }</div>}
                     <div>
                         <h3 className="card-title">{props.player.name}</h3>
                         <h6 className="card-subtitle mb-2 text-muted">{getPositionString(props.player.mainPosition)}</h6>

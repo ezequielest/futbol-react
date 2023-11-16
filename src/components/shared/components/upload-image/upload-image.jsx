@@ -59,7 +59,7 @@ const UploadImage = ({props, imageUploaded}) => {
                     </div>*/
                 )
             }
-            
+
         </div>
         </div>
     );

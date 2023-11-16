@@ -281,8 +281,8 @@ function AdminPlayers(props) {
                                 (<>
                                 <div className="row">
                                     <div className="col-12">
-                                        { newPlayerForm.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + newPlayerForm.image} />}
-                                        { !newPlayerForm.image && <div className="avatar-player placeholder">{newPlayerForm.name[0] }</div>}
+                                        { newPlayerForm.image && <img className="avatar-player-card" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + newPlayerForm.image} />}
+                                        { !newPlayerForm.image && <div className="avatar-player-card placeholder">{newPlayerForm.name[0] }</div>}
                                         
                                         <div className="upload-image">  
                                             <UploadImage imageUploaded={handleUploadImage}/>
