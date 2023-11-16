@@ -53,9 +53,10 @@ const UploadImage = ({props, imageUploaded}) => {
             }
             {
                 imageLoading && (
-                    <div className="progress">
+                    <span>Cargando imagen...</span>
+                    /*<div className="progress">
                         <div className={`progress-bar bg-info w–${pogressBar}`} style={{ width: pogressBar + '%'}} role="pogressBar" aria-valuenow={pogressBar} aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                    </div>*/
                 )
             }
             
