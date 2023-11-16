@@ -10,10 +10,10 @@ const UploadImage = ({props, imageUploaded}) => {
     const [pogressBar, setPogressBar] = useState(false);
 
     // S3 Bucket Name
-    const S3_BUCKET = process.env.S3_BUCKET;
+    const S3_BUCKET = import.meta.env.S3_BUCKET;
 
     // S3 Region
-    const REGION = process.env.S3_REGION;
+    const REGION = import.meta.env.S3_REGION;
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -25,8 +25,8 @@ const UploadImage = ({props, imageUploaded}) => {
 
         // S3 Credentials
         AWS.config.update({
-            accessKeyId: process.env.S3_ACCESS_KEY_ID,
-            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+            accessKeyId: import.meta.env.S3_ACCESS_KEY_ID,
+            secretAccessKey: import.meta.env.S3_SECRET_ACCESS_KEY
         });
         const s3 = new AWS.S3({
             params: { Bucket: S3_BUCKET },
