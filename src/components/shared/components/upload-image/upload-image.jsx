@@ -1,6 +1,7 @@
 import S3 from 'aws-sdk/clients/s3.js'; 
 import { useState } from "react";
 import './upload-image.scss';
+import { S3Client } from "@aws-sdk/client-s3";
 
 const UploadImage = ({props, imageUploaded}) => {
 
@@ -8,12 +9,6 @@ const UploadImage = ({props, imageUploaded}) => {
     const [imageLoading, setImageLoading] = useState(false);
     const [imageLoadedSuccess, setImageLoadedSuccess] = useState(false);
     const [pogressBar, setPogressBar] = useState(false);
-
-    // S3 Bucket Name
-    const S3_BUCKET = import.meta.env.S3_BUCKET;
-
-    // S3 Region
-    const REGION = import.meta.env.S3_REGION;
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -31,16 +26,16 @@ const UploadImage = ({props, imageUploaded}) => {
             secretAccessKey: import.meta.env.S3_SECRET_ACCESS_KEY
         });
 
-        // Files Parameters
-
-        const params = {
-            Bucket: S3_BUCKET,
+        await client.send(new PutObjectCommand({
+            Bucket: import.meta.env.S3_BUCKET,
             Key: file.name,
-            Body: file,
-        };
+            Body: fs.readFileSync(file.path),
+            ACL: 'public-read',
+            ContentType: mime.lookup(file.path),
+        }));
 
         // Uploading file to s3
-        setImageLoading(true);
+       /*setImageLoading(true);
         var upload = s3
             .putObject(params)
             .on("httpUploadProgress", (evt) => {
@@ -65,7 +60,7 @@ const UploadImage = ({props, imageUploaded}) => {
             setTimeout(() => {
                 setImageLoadedSuccess(false);
             }, 5000);
-        });
+        });*/
     }
 
     return (
