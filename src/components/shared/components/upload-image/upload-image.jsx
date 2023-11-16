@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk';
+import S3 from 'aws-sdk/clients/s3.js'; 
 import { useState } from "react";
 import './upload-image.scss';
 
@@ -24,13 +24,11 @@ const UploadImage = ({props, imageUploaded}) => {
     const uploadFile = async (file) => {
 
         // S3 Credentials
-        AWS.config.update({
-            accessKeyId: import.meta.env.S3_ACCESS_KEY_ID,
-            secretAccessKey: import.meta.env.S3_SECRET_ACCESS_KEY
-        });
-        const s3 = new AWS.S3({
+        const s3 = new S3({
             params: { Bucket: S3_BUCKET },
             region: REGION,
+            accessKeyId: import.meta.env.S3_ACCESS_KEY_ID,
+            secretAccessKey: import.meta.env.S3_SECRET_ACCESS_KEY
         });
 
         // Files Parameters
