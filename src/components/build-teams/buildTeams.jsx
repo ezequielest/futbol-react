@@ -58,7 +58,7 @@ function BuildTeam() {
         const selected = [];
         for (let i = 0; i < options.length; i++) {
             if (options[i].selected) {
-               selected.push(options[i].value)
+                selected.push(options[i].value)
             }
         }
 

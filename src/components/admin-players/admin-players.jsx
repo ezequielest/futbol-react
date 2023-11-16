@@ -4,6 +4,8 @@ import { db } from "/src/firebase/firebase.js";
 import { addDoc, updateDoc, collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
 import PlayerCard from './../shared/components/player-card/player-card';
 import { calcPoinsPlayer } from '/src/components/shared/player-service';
+import UploadImage from '/src/components/shared/components/upload-image/upload-image';
+import './admin-player.scss';
 
 function AdminPlayers(props) {
 
@@ -19,6 +21,7 @@ function AdminPlayers(props) {
         middle: 0,
         offence: 0,
         age: 0,
+        image: '',
         onTeam: false
     };
 
@@ -86,6 +89,7 @@ function AdminPlayers(props) {
             middle: parseInt(newPlayerForm.middle),
             offence: parseInt(newPlayerForm.offence),
             age: parseInt(newPlayerForm.age),
+            image: newPlayerForm.image,
             totalPoints: totalPoints,
             onTeam: false
         };
@@ -153,6 +157,15 @@ function AdminPlayers(props) {
 
     const closeModal = () => {
         setNewPlayerForm(initialNewPlayer);
+    }
+
+    const handleUploadImage = (fileName) => {
+        console.log('file desde admin-player', fileName);
+
+        setNewPlayerForm({
+            ...newPlayerForm,
+            image: fileName
+          });
     }
 
     return (
@@ -253,16 +266,32 @@ function AdminPlayers(props) {
                         <div className="modal-content">
                         <div className="modal-header">
                             { isEditingPlayer &&
-                              <h5 className="modal-title text-center center">Editar Jugador</h5>
+                                <h5 className="modal-title text-center center">Editar Jugador</h5>
                             }
 
                             { !isEditingPlayer &&
-                              <h5 className="modal-title text-center center">Nuevo Jugador</h5>
+                                <h5 className="modal-title text-center center">Nuevo Jugador</h5>
                             }
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
                         </div>
                         <div className="modal-body">
                             <form className='container'>
+
+                                { isEditingPlayer &&
+                                (<>
+                                <div className="row">
+                                    <div className="col-12">
+                                        { newPlayerForm.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + newPlayerForm.image} />}
+                                        { !newPlayerForm.image && <div className="avatar-player placeholder">{newPlayerForm.name[0] }</div>}
+                                        
+                                        <div className="upload-image">  
+                                            <UploadImage imageUploaded={handleUploadImage}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                </>
+                                )
+                                }
 
                                 <div className="row">
                                     <div className="col mb-3">
