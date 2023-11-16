@@ -64,7 +64,7 @@ function AdminPlayers(props) {
         setNewPlayerForm({
             ...newPlayerForm,
             [name]: value
-          });
+        });
     }
 
     const getPositionString = (number)=> {
@@ -89,7 +89,7 @@ function AdminPlayers(props) {
             middle: parseInt(newPlayerForm.middle),
             offence: parseInt(newPlayerForm.offence),
             age: parseInt(newPlayerForm.age),
-            image: newPlayerForm.image,
+            image: newPlayerForm.image ? newPlayerForm.image : '',
             totalPoints: totalPoints,
             onTeam: false
         };
@@ -98,40 +98,37 @@ function AdminPlayers(props) {
 
         if (isEditingPlayer) {
 
-          const playersRef = collection(db, "players");
+            const playersRef = collection(db, "players");
 
-          const q = query(playersRef, where("name", "==",  newPlayerForm.name));
-          const querySnapshot = await getDocs(q);
+            const q = query(playersRef, where("name", "==",  newPlayerForm.name));
+            const querySnapshot = await getDocs(q);
 
-          querySnapshot.forEach(async(documento) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(documento.id, " => ", documento.data());
-            const playersRef = doc(db, "players", documento.id);
+            querySnapshot.forEach(async(documento) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(documento.id, " => ", documento.data());
+                const playersRef = doc(db, "players", documento.id);
 
-            await updateDoc(playersRef, payload);
+                await updateDoc(playersRef, payload);
 
-            getPlayersData();
-            setLoading(false);
-            setNewPlayerForm(initialNewPlayer);
-            $('#newPlayerModal').modal('hide');
-          });
+                getPlayersData();
+                setLoading(false);
+                setNewPlayerForm(initialNewPlayer);
+                $('#newPlayerModal').modal('hide');
+            });
 
-        } else {
-          addDoc(collection(db, "players"), payload)
-          .then(()=>{
-              console.log('ok')
-              getPlayersData();
-              setLoading(false);
-              setNewPlayerForm(initialNewPlayer);
-              $('#newPlayerModal').modal('hide');
-          }).catch((err)=>{
-              console.log(err)
-          })
+            } else {
+            addDoc(collection(db, "players"), payload)
+            .then(()=>{
+                console.log('ok')
+                getPlayersData();
+                setLoading(false);
+                setNewPlayerForm(initialNewPlayer);
+                $('#newPlayerModal').modal('hide');
+            }).catch((err)=>{
+                console.log(err)
+            })
         }
-
-
     }
-
 
     const viewPlayer = (playerSelected) => {
         console.log('playerSelected ', playerSelected);
