@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 import { useState } from "react";
 import './upload-image.scss';
 
@@ -10,10 +10,10 @@ const UploadImage = ({props, imageUploaded}) => {
     const [pogressBar, setPogressBar] = useState(false);
 
     // S3 Bucket Name
-    const S3_BUCKET = "futbol-team";
+    const S3_BUCKET = process.env.S3_BUCKET;
 
     // S3 Region
-    const REGION = "us-east-2";
+    const REGION = process.env.S3_REGION;
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -25,8 +25,8 @@ const UploadImage = ({props, imageUploaded}) => {
 
         // S3 Credentials
         AWS.config.update({
-            accessKeyId: "AKIARHPZOGIMO5WOEK4B",
-            secretAccessKey: "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",
+            accessKeyId: process.env.S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
         });
         const s3 = new AWS.S3({
             params: { Bucket: S3_BUCKET },
