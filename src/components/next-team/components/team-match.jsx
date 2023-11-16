@@ -1,12 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
+import './team-match.scss';
 
 function TeamMatch(props) {
-
-    const [viewPlayerSelected, setViewPlayerSelected] = useState({});
-    const [arquero, setArquero] = useState({});
-    const [defensores, setDefensores] = useState({});
-    const [medio, setMedio] = useState({});
-    const [delanteros, setDelanteros] = useState({});
 
     const seeDetails = (player) => {
       props.playerSelected(player);
@@ -21,7 +16,8 @@ function TeamMatch(props) {
                         { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '1') {
                           return (<div key={i} className="player" onClick={() => seeDetails(player)}>
-                              <i className="fa-solid fa-shirt"></i>
+                              { player.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} />}
+                              { !player.image && <div className="avatar-player placeholder">{player.name[0] }</div>}
                               <div className="name">{player.name} ({player.totalPoints})</div>
                           </div>)
                           }
@@ -32,8 +28,10 @@ function TeamMatch(props) {
                       { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '2') {
                           return(<div key={i} className="player" onClick={() => seeDetails(player)}>
-                              <i className="fa-solid fa-shirt"></i>
+                              { player.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} />}
+                              { !player.image && <div className="avatar-player placeholder">{player.name[0] }</div>}
                               <div className="name">{player.name} ({player.totalPoints})</div>
+                            
                           </div>)
                           }
                         })
@@ -44,7 +42,8 @@ function TeamMatch(props) {
                       { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '3') {
                           return(<div key={i} className="player" onClick={() => seeDetails(player)}>
-                              <i className="fa-solid fa-shirt"></i>
+                              { player.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} />}
+                              { !player.image && <div className="avatar-player placeholder">{player.name[0] }</div>}
                               <div className="name">{player.name} ({player.totalPoints})</div>
                           </div>)
                           }
@@ -55,8 +54,9 @@ function TeamMatch(props) {
                       { props.teamArray.map((player, i) => {
                           if (player.mainPosition === '4') {
                           return(
-                            <div key={i} className="player">
-                              <i className="fa-solid fa-shirt" onClick={() => seeDetails(player)}></i>
+                            <div key={i} className="player" onClick={() => seeDetails(player)}>
+                              { player.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} />}
+                              { !player.image && <div className="avatar-player placeholder">{player.name[0] }</div>}
                               <div className="name">{player.name} ({player.totalPoints})</div>
                           </div>)
                           }
