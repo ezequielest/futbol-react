@@ -1,6 +1,6 @@
-import S3 from 'aws-sdk/clients/s3.js'; 
-import { useState } from "react";
+import React, {useState} from 'react';
 import './upload-image.scss';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const UploadImage = ({props, imageUploaded}) => {
 
@@ -9,12 +9,6 @@ const UploadImage = ({props, imageUploaded}) => {
     const [imageLoadedSuccess, setImageLoadedSuccess] = useState(false);
     const [pogressBar, setPogressBar] = useState(false);
 
-    // S3 Bucket Name
-    const S3_BUCKET = import.meta.env.S3_BUCKET;
-
-    // S3 Region
-    const REGION = import.meta.env.S3_REGION;
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setFile(file);
@@ -22,50 +16,32 @@ const UploadImage = ({props, imageUploaded}) => {
     };
 
     const uploadFile = async (file) => {
-
+        console.log('file ', file);
         // S3 Credentials
-        const s3 = new S3({
-            params: { Bucket: S3_BUCKET },
-            region: REGION,
-            accessKeyId: import.meta.env.S3_ACCESS_KEY_ID,
-            secretAccessKey: import.meta.env.S3_SECRET_ACCESS_KEY
+        const client = new S3Client({
+            region: import.meta.env.VITE_S3_REGION,
+            credentials: {
+                accessKeyId: import.meta.env.VITE_S3_ACCESS_KEY_ID,
+                secretAccessKey: import.meta.env.VITE_S3_SECRET_ACCESS_KEY,
+            },
         });
 
-        // Files Parameters
-
-        const params = {
-            Bucket: S3_BUCKET,
-            Key: file.name,
-            Body: file,
-        };
-
-        // Uploading file to s3
         setImageLoading(true);
-        var upload = s3
-            .putObject(params)
-            .on("httpUploadProgress", (evt) => {
-            // File uploading progress
-            console.log(
-              "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
-            );
+        await client.send(new PutObjectCommand({
+            Bucket: import.meta.env.VITE_S3_BUCKET,
+            Key: file.name,
+            Body: file
+        }));
 
-            setPogressBar(parseInt((evt.loaded * 100) / evt.total))
-        })
-        .promise();
+        setImageLoadedSuccess(true);
+        imageUploaded(file.name);
+        setImageLoading(false);
 
-        await upload.then((err, data) => {
-            console.log(err);
-            console.log(data);
+        setTimeout(() => {
+            setImageLoadedSuccess(false);
+        }, 5000);
 
-            imageUploaded(file.name);
-
-            setImageLoading(false);
-            setImageLoadedSuccess(true);
-
-            setTimeout(() => {
-                setImageLoadedSuccess(false);
-            }, 5000);
-        });
+        console.log('todo ok');
     }
 
     return (
@@ -77,9 +53,10 @@ const UploadImage = ({props, imageUploaded}) => {
             }
             {
                 imageLoading && (
-                    <div className="progress">
+                    <span>Cargando imagen...</span>
+                    /*<div className="progress">
                         <div className={`progress-bar bg-info w–${pogressBar}`} style={{ width: pogressBar + '%'}} role="pogressBar" aria-valuenow={pogressBar} aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                    </div>*/
                 )
             }
             
