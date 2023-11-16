@@ -11,7 +11,7 @@ function App() {
   sessionStorage.setItem('isLoggedIn', false);
   return (
     <>
-    <BrowserRouter basename="/lacancha2">
+    <BrowserRouter>
     <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<NextTeam />} />
