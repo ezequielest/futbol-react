@@ -5,6 +5,7 @@ import { addDoc, updateDoc, collection, query, where, getDocs, getDoc, doc} from
 import PlayerCard from './../shared/components/player-card/player-card';
 import { calcPoinsPlayer } from '/src/components/shared/player-service';
 import UploadImage from '/src/components/shared/components/upload-image/upload-image';
+import './admin-player.scss';
 
 function AdminPlayers(props) {
 
@@ -20,6 +21,7 @@ function AdminPlayers(props) {
         middle: 0,
         offence: 0,
         age: 0,
+        image: '',
         onTeam: false
     };
 
@@ -87,6 +89,7 @@ function AdminPlayers(props) {
             middle: parseInt(newPlayerForm.middle),
             offence: parseInt(newPlayerForm.offence),
             age: parseInt(newPlayerForm.age),
+            image: newPlayerForm.image,
             totalPoints: totalPoints,
             onTeam: false
         };
@@ -154,6 +157,15 @@ function AdminPlayers(props) {
 
     const closeModal = () => {
         setNewPlayerForm(initialNewPlayer);
+    }
+
+    const handleUploadImage = (fileName) => {
+        console.log('file desde admin-player', fileName);
+
+        setNewPlayerForm({
+            ...newPlayerForm,
+            image: fileName
+          });
     }
 
     return (
@@ -269,18 +281,12 @@ function AdminPlayers(props) {
                                 (<>
                                 <div className="row">
                                     <div className="col-12">
-                                        showing image
-                                    </div>
-                                </div>
-                                </>
-                                )
-                                }
-
-                                { !isEditingPlayer &&
-                                (<>
-                                <div className="row">
-                                    <div className="col-12">
-                                        <UploadImage />
+                                        { newPlayerForm.image && <img className="avatar-player" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + newPlayerForm.image} />}
+                                        { !newPlayerForm.image && <div className="avatar-player placeholder">{newPlayerForm.name[0] }</div>}
+                                        
+                                        <div className="upload-image">  
+                                            <UploadImage imageUploaded={handleUploadImage}/>
+                                        </div>
                                     </div>
                                 </div>
                                 </>

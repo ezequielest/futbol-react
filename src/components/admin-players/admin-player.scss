@@ -1,0 +1,22 @@
+.avatar-player {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    color: white;
+    border: 1px solid #777;
+    object-fit: scale-down;
+    margin-bottom: 12px;
+    margin-right: 12px;
+
+    &.placeholder {
+        background-color: grey;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+    }
+}
+
+.upload-image {
+    margin-bottom: 12px;
+}
