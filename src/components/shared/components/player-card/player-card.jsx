@@ -1,5 +1,7 @@
 
 
+import './player-card.scss';
+
 
 function PlayerCard(props) {
 
@@ -23,7 +25,7 @@ return (
                     </div>
                 </div>
                 <div>
-                    <div className="bg-primary" style={{ borderRadius: '50%', height: '100px', width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><span style={{ fontSize: '50px'}} className="text-gray-100">{props.player.totalPoints}</span></div>
+                    <div className="bg-primary circle-point" ><span className="text-gray-100">{props.player.totalPoints}</span></div>
                 </div>
             </div>
 

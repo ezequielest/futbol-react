@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import { db } from "/src/firebase/firebase.js";
 import { collection, getDocs} from "firebase/firestore";
 import PlayerCard from '../shared/components/player-card/player-card';
+import './see-players-points.scss';
 
 function SeePlayersPoints() {
 
@@ -43,7 +44,7 @@ function SeePlayersPoints() {
 
     return (
         <>
-            <div id="content-wrapper" className="d-flex flex-column">
+            <div className="d-flex flex-column content-wrapper">
 
                 {/* Main Content */}
                 <div id="content">
@@ -57,54 +58,45 @@ function SeePlayersPoints() {
                             {/* Content Column */}
                             <div className="col-lg-12 mb-4">
                             <h3>Puntos de jugadores</h3>
-                            <table className="table table-responsive">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Posición</th>
-                                    <th scope="col">Puntaje</th>
-                                    <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+ 
+                            <div class="cards-container">     
+                                {
+                                allPlayers?.map((player, i)=> {
+                                    let listClass = '';
 
+                                    if (player.mainPosition === '4') {
+                                        listClass = 'text-success';
+                                    } else if (player.mainPosition === '3') {
+                                        listClass = 'text-warning';
+                                    } else if (player.mainPosition === '1') {
+                                        listClass = 'text-danger';
+                                    } else if (player.mainPosition === '2') {
+                                        listClass = 'text-primary';
+                                    }
+                                    return (<div key={i} className="card">
                                         {
-                                            allPlayers?.map((player, i)=> {
-                                                let listClass = '';
-
-                                                if (player.mainPosition === '4') {
-                                                    listClass = 'bg-success p-2';
-                                                } else if (player.mainPosition === '3') {
-                                                    listClass = 'bg-warning p-2';
-                                                } else if (player.mainPosition === '1') {
-                                                    listClass = 'bg-danger p-2';
-                                                } else if (player.mainPosition === '2') {
-                                                    listClass = 'bg-primary p-2';
-                                                }
-
-                                                return (
-
-                                                    <tr key={i}>
-                                                        <th scope="row">{ i+1 }</th>
-                                                        <td>{ player.name }</td>
-                                                        <td>
-                                                            <span className={listClass} style={{ borderRadius: '4px', width: '100px', display: 'block', textAlign: 'center', color: 'white'}}>
-                                                                { getPositionString(player.mainPosition) }
-                                                            </span>
-                                                        </td>
-                                                        <td>{ player.totalPoints }</td>
-                                                        <td>
-                                                        <a style={{'marginRight': '10px'}} onClick={() => viewPlayer(player)}><i className="fa-regular fa-eye"></i></a>
-                                                        </td>
-                                                    </tr>
-
-                                                )
-                                            })
+                                            player.image && <img src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} className="avatar" alt="..."/>
                                         }
+                                        {
+                                            !player.image && <div className="img-placeholder"></div>
+                                        }
+                                        
+                                        <div className="card-body">
+                                            <div className="first-line">
+                                                <div className="player-name">{ player.name }</div>
+                                                <div className="circle">{ player.totalPoints }</div>
+                                            </div>
 
-                                </tbody>
-                            </table>
+                                            <span className={'position ' + listClass}>
+                                                { getPositionString(player.mainPosition) }
+                                            </span>
+
+                                            <a href="#" onClick={() => viewPlayer(player)} className="btn btn-primary">Ver puntos</a>
+                                        </div>
+                                    </div>)
+                                    })
+                                }
+                            </div>
 
                             </div>
 

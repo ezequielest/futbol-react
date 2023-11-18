@@ -8,7 +8,10 @@ import Login from './components/login/login'
 import './App.scss'
 
 function App() {
-  localStorage.setItem('isLoggedIn', false);
+  const hasLocalData = localStorage.getItem('isLoggedIn') !== undefined;
+  if (!hasLocalData)  {
+    localStorage.setItem('isLoggedIn', false);
+  }
   return (
     <>
     <BrowserRouter>
