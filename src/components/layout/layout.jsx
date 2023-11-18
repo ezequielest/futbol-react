@@ -11,13 +11,13 @@ function Layout() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const logged = JSON.parse(sessionStorage.getItem('isLoggedIn'));
+        const logged = JSON.parse(localStorage.getItem('isLoggedIn'));
         console.log('logged ',logged)
         setIsLoggedIn(logged);
     },[]);
 
     const checkSession = () => {
-        const logged = JSON.parse(sessionStorage.getItem('isLoggedIn'));
+        const logged = JSON.parse(localStorage.getItem('isLoggedIn'));
         console.log('logged ',logged)
         setIsLoggedIn(logged);
     }
@@ -27,7 +27,7 @@ function Layout() {
     }
 
     const sessionClose = () => {
-        sessionStorage.setItem('isLoggedIn', false);
+        localStorage.setItem('isLoggedIn', false);
         setIsLoggedIn(false);
         navigate("/");
         $(".navbar-toggler").click();

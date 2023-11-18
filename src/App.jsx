@@ -8,7 +8,7 @@ import Login from './components/login/login'
 import './App.scss'
 
 function App() {
-  sessionStorage.setItem('isLoggedIn', false);
+  localStorage.setItem('isLoggedIn', false);
   return (
     <>
     <BrowserRouter>

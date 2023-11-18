@@ -26,7 +26,7 @@ function Login() {
     const saveLogin = (e) => {
         e.preventDefault();
         if (loginForm.user === 'admin' && loginForm.password === 'fulbito123') {
-            sessionStorage.setItem('isLoggedIn', true);
+            localStorage.setItem('isLoggedIn', true);
             Navigate("/next-team");
         } else {
             setShowLoginError(true);
