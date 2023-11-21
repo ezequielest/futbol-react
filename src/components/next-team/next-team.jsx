@@ -159,7 +159,7 @@ function NextTeam() {
 
           if (localResultMatch > visitingResultMatch) {
             teamOneArray.forEach(async player => {
-              addPoints(player);
+              addPoints(player, 2);
             })
 
             teamTwoArray.forEach(async player => {
@@ -174,6 +174,9 @@ function NextTeam() {
             teamTwoArray.forEach(async player => {
               addPoints(player);
             });
+          } else {
+            //empate, suma 1
+            addPoints(player, 1);
           }
 
           console.log('saved ok');
@@ -195,7 +198,7 @@ function NextTeam() {
       setMatchResultForm ({});
     }
 
-    const addPoints = async (player) =>  {
+    const addPoints = async (player, cant) =>  {
 
       const q = query(collection(db, "players"), where("name", "==", player.name));
       const querySnapshot = await getDocs(q);
@@ -207,23 +210,23 @@ function NextTeam() {
         let playerTemp =  playerData;
 
         if (playerTemp.mainPosition === '1') {
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.mainPosition === '2'){
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.mainPosition === '3') {
-          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + 2;
+          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + cant;
         } else if (playerTemp.mainPosition === '4') {
-          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + 2;
+          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + cant;
         }
 
         if (playerTemp.secondaryPosition === '1') {
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.secondaryPosition === '2'){
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + 2;
+          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.secondaryPosition === '3') {
-          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + 2;
+          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + cant;
         } else if (playerTemp.secondaryPosition === '4') {
-          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + 2;
+          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + cant;
         }
 
         console.log('player temp ', playerTemp)
