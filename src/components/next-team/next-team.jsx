@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
 import {useEffect} from 'react';
 import { db } from "/src/firebase/firebase.js";
-import { doc, collection, getDocs, addDoc, deleteDoc, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
+import { doc, collection, getDocs,setDoc, addDoc, deleteDoc, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
 import './next-team.scss'
 import TeamMatch from './components/team-match';
 import PlayerCard from '/src/components/shared/components/player-card/player-card';
 import { useNavigate  } from "react-router-dom";
 import {calcPoinsPlayer} from '/src/components/shared/player-service';
+import swal from 'sweetalert';
+
 
 function NextTeam() {
 
@@ -23,9 +25,17 @@ function NextTeam() {
     const [playerSelected, setPlayerSelected] = useState({});
     const [bestPlayer, setBestPlayer] = useState(null);
     const [hardPlayer, setHardPlayer] = useState(null);
+    const [allPlayers, setAllPlayers] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState([]);
+
+    const [playerToChange, setPlayerToChange] = useState(null);
+    const [playerForChange, setPlayerForChange] = useState('');
+
     const navigate = useNavigate();
 
     useEffect(()=> {
+      const logged = JSON.parse(localStorage.getItem('isLoggedIn'));
+      setIsLoggedIn(logged);
       getTeamForTheNextMatch();
     } , [])
 
@@ -172,8 +182,6 @@ function NextTeam() {
               //delete from next-team
               //update team points
               getTeamForTheNextMatch();
-
-              console.log('deleted ok from current played')
           }).catch((err)=>{
               console.log(err)
           })
@@ -349,6 +357,136 @@ function NextTeam() {
       });
     }
 
+    const deleteMatch = () => {
+
+      swal({
+        title: "Estas seguro de eliminar el equipo actual?",
+        text: "Una vez eliminado, debera crearlo nuevamente",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          deleteDoc(doc(db, "next-match", currentMatchId))
+          .then(()=>{
+              getTeamForTheNextMatch();
+              swal("Equipo eliminado con éxito");
+          }).catch((err)=>{
+              console.log(err)
+          })
+        }
+      });
+
+    }
+
+    const handleChangePlayer = (player) => {
+      setPlayerToChange(player);
+      getPlayersData(player);
+
+      $('#showDataPlayer').modal('hide');
+      $('#modalChangePlayer').modal('show');
+    }
+
+    const getPlayersData = async (player) => {
+      try {
+          const querySnapshot = await getDocs(collection(db, "players"));
+          const playersArray = [];
+          querySnapshot.forEach((doc) => {
+            playersArray.push(doc.data())
+          });
+
+          const playersArrayFilter = playersArray.filter(playerTeam => {
+            return playerTeam.name !== player.name
+          }) 
+
+          setAllPlayers(playersArrayFilter);
+          localStorage.setItem('players',JSON.stringify(playersArray));
+      } catch (error) {
+          console.error("Error al obtener datos de Firestore:", error);
+      }
+    };
+      
+    const hideModalChangePlayer = () => {
+      setPlayerForChange(null);
+      setPlayerToChange(null);
+      $('#showDataPlayer').modal('show');
+      $('#modalChangePlayer').modal('hide');
+    }
+
+    const handleSectionPlayerToChange = (e) => {
+      const options = e.target.options;
+      let playerForCh;
+      for (let i = 0; i < options.length; i++) {
+          if (options[i].selected) {
+              playerForCh = options[i].value;
+          }
+      }
+
+      const playerTemp = allPlayers.find((player) => {
+        return player.name === playerForCh;
+      })
+      console.log('player for change ', playerForCh);
+      setPlayerForChange(playerTemp);
+    }
+
+    const handleChangePlayerToPlayer = () => {
+      $('#showDataPlayer').modal('hide');
+      $('#modalChangePlayer').modal('hide');
+      let teamOneArrayTemp = [];
+      let teamTwoArrayTemp = [];
+
+      const mondayPlayer = teamOneArray.concat(teamTwoArray);
+
+      const isAlreadyOnMatch = mondayPlayer.some(player => {
+        return playerForChange.name === player.name;
+      });
+
+      if (isAlreadyOnMatch) {
+        swal("No se puede reemplazar", "Este jugador ya forma parte del partido", "error");
+      } else {
+        //buscar donde esta el personaje que tengo que cambiar y reemplazarlo
+        let hasChangeOnOneArray = teamOneArray.some((player) => {
+          return player.name === playerToChange.name;
+        })
+
+        let hasChangeOnTwoArray = teamTwoArray.some((player) => {
+          return player.name === playerToChange.name;
+        })
+
+        if (hasChangeOnOneArray) {
+          teamOneArrayTemp = teamOneArray.filter((player) => {
+            return player.name !== playerToChange.name;
+          });
+
+          teamOneArrayTemp.push(playerForChange);
+          teamTwoArrayTemp = teamTwoArray;
+        }
+
+        if (hasChangeOnTwoArray) { 
+          teamTwoArrayTemp = teamTwoArray.filter((player) => {
+            return player.name !== playerToChange.name;
+          });
+
+          teamOneArrayTemp = teamOneArray;
+          teamTwoArrayTemp.push(playerForChange);
+        }
+
+        const teamOne = JSON.stringify(teamOneArrayTemp);
+        const teamTwo = JSON.stringify(teamTwoArrayTemp);
+
+        const jsonTeams = {
+            teamOne,
+            teamTwo
+        }
+
+        setDoc(doc(db, "next-match", "krFHQIrA6som1LX34jlO"), jsonTeams).then(() => {
+            swal("Jugador cambiado con éxito!");
+            getTeamForTheNextMatch();
+        });
+      }
+    }
+
     return (<>
               <header>
                 <a className='btn btn-primary' onClick={getBeforeMatchTeam}>PARTIDO ANTERIOR</a>
@@ -435,13 +573,16 @@ function NextTeam() {
                 }
 
                 <div className="team-match-container">
-                  <TeamMatch teamName={'LOCAL'} teamArray={teamOneArray} playerSelected={handlePlayerSelected} />
-                  <TeamMatch teamName={'VISITANTE'} teamArray={teamTwoArray} playerSelected={handlePlayerSelected} />
+                  <TeamMatch teamName={'local'} teamArray={teamOneArray} playerSelected={handlePlayerSelected} />
+                  <TeamMatch teamName={'visitante'} teamArray={teamTwoArray} playerSelected={handlePlayerSelected} invertPositions={true} />
                 </div>
 
                 <div className="finish-team-form">
                   { !matchHasEnded && infoMatch.type === 'next' &&
-                    <a className='btn btn-secondary' onClick={finishMatch}>Finalizar partido</a>
+                    (<>
+                    <a className='btn btn-primary mx-2' onClick={finishMatch}>Finalizar partido</a>
+                    <a className='btn btn-danger' onClick={deleteMatch}>Eliminar equipo</a>
+                    </>)
                   }
                   { matchHasEnded && infoMatch.type === 'next' &&
                   (
@@ -470,21 +611,76 @@ function NextTeam() {
                     <div className="modal-body">
                       <PlayerCard player={playerSelected} />
                     </div>
-                    
-                    <div className="modal-footer">
-                      {!bestPlayer && infoMatch.type !== 'next' &&
-                      (<a className='btn btn-primary' onClick={() => handleBestPlayer(playerSelected)}>MEJOR JUGADOR</a>)
-                      }
 
-                      {!hardPlayer && infoMatch.type !== 'next' &&
-                      (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>MEJOR MAS PICANTE</a>)
-                      }
-                    </div>
+                    {
+                      isLoggedIn && (
+                        <div className="modal-footer">
+                        {!bestPlayer && infoMatch.type !== 'next' &&
+                        (<a className='btn btn-primary' onClick={() => handleBestPlayer(playerSelected)}>MEJOR JUGADOR</a>)
+                        }
+  
+                        {!hardPlayer && infoMatch.type !== 'next' &&
+                        (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>MEJOR MAS PICANTE</a>)
+                        }
+  
+                        { infoMatch.type === 'next' &&
+                        (<a className='btn btn-primary' onClick={() => handleChangePlayer(playerSelected)}>CAMBIAR JUGADOR</a>)
+                        }
+                      </div>
+                      )
+                    }
                     </div>
                 </div>
               </div>
               </>)
               }
+
+
+              <div className="modal fade" id="modalChangePlayer" tabIndex="-1" aria-labelledby="modalChangePlayer" aria-hidden="true">
+                <div className="modal-dialog">
+                  <div className="modal-content">
+
+                    <div className="modal-body">
+                        <div className='change-for-container'>
+                        <div>
+                          { playerToChange?.image &&<img className="avatar-player mx-2" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + playerToChange?.image} />}
+                          { !playerToChange?.image && <div className="avatar-player placeholder">{playerToChange?.name[0] }</div>}
+                          { playerToChange?.name }
+                        </div>
+                        { playerForChange &&
+                        (<>
+                        <div>POR</div>
+                        <div>
+                          { playerForChange?.image &&<img className="avatar-player mx-2" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + playerForChange?.image} />}
+                          { !playerForChange?.image && <div className="avatar-player placeholder">{playerForChange?.name[0] }</div>}
+                          { playerForChange?.name }
+                        </div>
+                        </>)
+                        }
+                        </div>
+
+                        <div>
+                          <select name="allPlayers" id="allPlayersSelect" value={playerForChange?.name || ''} className="form-select all-players single mt-4" onChange={handleSectionPlayerToChange}>
+                              <option value="">Seleccionar reemplazo</option>
+                              {
+                                  allPlayers?.map((player, i)=> {
+                                      return <option key={i} value={player.name}>{player.name}</option>;
+                                  })
+                              }
+                          </select>
+
+                        </div>
+
+
+                    </div>
+                    
+                    <div className="modal-footer">
+                      <a className='btn btn-primary' onClick={() => handleChangePlayerToPlayer(playerSelected)}>CAMBIAR</a>
+                      <a className='btn btn-danger' onClick={() => hideModalChangePlayer(playerSelected)}>CANCELAR</a>
+                    </div>
+                    </div>
+                </div>
+              </div>
             </>
     )
 }

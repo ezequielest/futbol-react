@@ -388,23 +388,61 @@ function BuildTeam() {
 
     const saveTeamForNextPlayer = async () => {
 
-        const teamOne = JSON.stringify(teamOneArray);
-        const teamTwo = JSON.stringify(teamTwoArray);
 
-        const jsonTeams = {
-            teamOne,
-            teamTwo
+        try {
+            const querySnapshot = await getDocs(collection(db, "next-match"));
+            console.log('querySnapshot', querySnapshot)
+            if (querySnapshot.size > 0) {
+                swal({
+                    title: "Ya existe un partido",
+                    text: "El equipo actual sera reemplazado por el que acabas de crear, estas seguro?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                  })
+                  .then((willDelete) => {
+                    if (willDelete) {
+                        const teamOne = JSON.stringify(teamOneArray);
+                        const teamTwo = JSON.stringify(teamTwoArray);
+                
+                        const jsonTeams = {
+                            teamOne,
+                            teamTwo
+                        }
+                
+                        setDoc(doc(db, "next-match", "krFHQIrA6som1LX34jlO"), jsonTeams).then(() => {
+                            setShowSuccessSaveTeamMessage(true);
+                
+                            Navigate("/next-team");
+                
+                            setTimeout(() => {
+                              setShowSuccessSaveTeamMessage(false);
+                            }, "5000");
+                        });
+                    }
+                  });
+            } else {
+                const teamOne = JSON.stringify(teamOneArray);
+                const teamTwo = JSON.stringify(teamTwoArray);
+        
+                const jsonTeams = {
+                    teamOne,
+                    teamTwo
+                }
+        
+                setDoc(doc(db, "next-match", "krFHQIrA6som1LX34jlO"), jsonTeams).then(() => {
+                    setShowSuccessSaveTeamMessage(true);
+        
+                    Navigate("/next-team");
+        
+                    setTimeout(() => {
+                      setShowSuccessSaveTeamMessage(false);
+                    }, "5000");
+                });
+            }
+        } catch (error) {
+            console.error("Error al obtener datos de Firestore:", error);
         }
-
-        setDoc(doc(db, "next-match", "krFHQIrA6som1LX34jlO"), jsonTeams).then(() => {
-            setShowSuccessSaveTeamMessage(true);
-
-            Navigate("/next-team");
-
-            setTimeout(() => {
-              setShowSuccessSaveTeamMessage(false);
-            }, "5000");
-        });
 
     }
 
