@@ -11,14 +11,11 @@ function Layout() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const logged = JSON.parse(localStorage.getItem('isLoggedIn'));
-        console.log('logged ',logged)
-        setIsLoggedIn(logged);
+        checkSession();
     },[]);
 
     const checkSession = () => {
         const logged = JSON.parse(localStorage.getItem('isLoggedIn'));
-        console.log('logged ',logged)
         setIsLoggedIn(logged);
     }
 

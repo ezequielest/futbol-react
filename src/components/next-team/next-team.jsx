@@ -501,7 +501,7 @@ function NextTeam() {
               <div className="without-next-team">
                 <div className="message">
                   <span>TODAVIA NO HAY EQUIPO DEFINIDO PARA EL PROXIMO PARTIDO</span>
-                  <a className='btn btn-primary' onClick={goToBuildTeam}>ARMAR EQUIPO</a>
+                  { isLoggedIn && <a className='btn btn-primary' onClick={goToBuildTeam}>ARMAR EQUIPO</a> }
                 </div>
               </div></>)
               }
