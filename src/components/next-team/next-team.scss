@@ -127,7 +127,18 @@ header {
   align-items: center;
 }
 
-.players-compare-container {
+.modal-dialog {
+  max-width: 98% !important;
+  height: auto !important;
+}
+
+.players-compare-container{
   display: flex !important;
   flex-direction: column;
+
+  @media (min-width: 800px) {
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+  }
 }

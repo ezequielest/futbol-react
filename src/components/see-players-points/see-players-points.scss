@@ -29,6 +29,18 @@
         margin-right: 8px;
         margin-bottom: 20px;
         width: 100%;
+        position: relative;
+        top: 0;
+        transition: all 0.3s ease;
+
+        box-shadow: 8px 10px 13px -4px rgba(156,156,156,0.75);
+        -webkit-box-shadow: 8px 10px 13px -4px rgba(156,156,156,0.75);
+        -moz-box-shadow: 8px 10px 13px -4px rgba(156,156,156,0.75);
+
+        &:hover {
+            top: 4px;
+            transition: all 0.3s ease;
+        }
         
         .avatar {
             max-width: 100%;

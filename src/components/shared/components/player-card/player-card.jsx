@@ -22,13 +22,19 @@ return (
                         <h3 className="card-title">{props.player.name}</h3>
                         <h6 className="card-subtitle mb-2 text-muted">{getPositionString(props.player.mainPosition)}</h6>
                         <p className="card-text"><span className="badge bg-primary rounded-pill">Edad {props.player.age}</span></p>
-                        <p className="card-text">Partidos jugados {props.player.totalMatch ? props.player.totalMatch : '--'}</p>
-                        <p className="card-text">Partidos ganados {props.player.totalMatchWin ? props.player.totalMatchWin : '--'}</p>
-                        <p className="card-text">Partidos perdidos {props.player.totalMatchLost ? props.player.totalMatchLost : '--'}</p>
                     </div>
                 </div>
                 <div>
                     <div className="bg-primary circle-point" ><span className="text-gray-100">{props.player.totalPoints}</span></div>
+                </div>
+            </div>
+
+            <div className="mb-2">
+                <h5>PARTIDOS</h5>
+                <div class="player-match-stat">
+                <p className="card-text">Jugados <span className="badge bg-primary rounded-pill">{props.player.totalMatch ? props.player.totalMatch : 0}</span></p>
+                <p className="card-text">Ganados <span className="badge bg-success rounded-pill">{props.player.totalMatchWin ? props.player.totalMatchWin : 0}</span></p>
+                <p className="card-text">Perdidos <span className="badge bg-danger rounded-pill">{props.player.totalMatchLost ? props.player.totalMatchLost : 0}</span></p>
                 </div>
             </div>
 

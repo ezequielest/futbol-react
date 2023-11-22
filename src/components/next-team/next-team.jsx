@@ -40,7 +40,20 @@ function NextTeam() {
       setIsLoggedIn(logged);
       getTeamForTheNextMatch();
       getPlayersData();
+
+      detectChangeOnModal();
     } , [])
+
+    const detectChangeOnModal = () => {
+
+      $('#showDataPlayer').on('hidden.bs.modal', function () {
+          console.log('se cerro o se abrio el modal');
+          setPlayerForChange(null);
+          setPlayerToCampare(null);
+      });
+
+
+    }
 
     const getBeforeMatchTeam = async () => {
       cancelSaveOldMatch();
@@ -213,36 +226,26 @@ function NextTeam() {
         let playerTemp =  playerData;
 
         if (playerTemp.mainPosition === '1') {
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
+          playerTemp.defense = playerData.defense + cant > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.mainPosition === '2'){
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
+          playerTemp.defense = playerData.defense + cant > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.mainPosition === '3') {
-          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + cant;
+          playerTemp.middle = playerData.middle + cant > 99 ? 99 : parseInt(playerData.middle) + cant;
         } else if (playerTemp.mainPosition === '4') {
-          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + cant;
+          playerTemp.offence = playerData.offence + cant > 99 ? 99 : parseInt(playerData.offence) + cant;
         }
 
         if (playerTemp.secondaryPosition === '1') {
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
+          playerTemp.defense = playerData.defense + cant > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.secondaryPosition === '2'){
-          playerTemp.defense = playerData.defense + 2 > 99 ? 99 : parseInt(playerData.defense) + cant;
+          playerTemp.defense = playerData.defense + cant > 99 ? 99 : parseInt(playerData.defense) + cant;
         } else if (playerTemp.secondaryPosition === '3') {
-          playerTemp.middle = playerData.middle + 2 > 99 ? 99 : parseInt(playerData.middle) + cant;
+          playerTemp.middle = playerData.middle + cant > 99 ? 99 : parseInt(playerData.middle) + cant;
         } else if (playerTemp.secondaryPosition === '4') {
-          playerTemp.offence = playerData.offence + 2 > 99 ? 99 : parseInt(playerData.offence) + cant;
+          playerTemp.offence = playerData.offence + cant > 99 ? 99 : parseInt(playerData.offence) + cant;
         }
 
-        console.log('player temp ', playerTemp)
         const totalPoints = calcPoinsPlayer(playerTemp);
-        console.log('totalPoints ', totalPoints)
-
-        payload = {
-          defense:      playerTemp.defense,
-          middle:       playerTemp.middle,
-          offence:      playerTemp.offence,
-          totalMatch: playerTemp.totalMatch ? playerTemp.totalMatch + 1 : 1,
-          totalPoints:  totalPoints
-        }
 
         updateDoc(player, {
           defense:      playerTemp.defense,
@@ -647,15 +650,15 @@ function NextTeam() {
                 <div className="modal-dialog">
                   <div className="modal-content">
 
-                    <div className="modal-body">
-                      <div className="players-compare-container">
+                    <div className="modal-body h-100 mobile-100">
+                      <div className="players-compare-container h-100 mobile-100">
 
                        <PlayerCard player={playerSelected} />
 
-                        <div>
-                          <h5>comparar con jugador</h5>
+                        <div className='mt-4 mb-2 mx-4'>
+                          <h5>Comparar con</h5>
                           <select name="allPlayers" id="allPlayersSelect" value={playerForChange?.name || ''} className="form-select all-players single mt-4" onChange={handleSectionPlayerToCompare}>
-                              <option value="">Comparar con</option>
+                              <option value="">Elegir jugador</option>
                               {
                                   allPlayers?.map((player, i)=> {
                                       return <option key={i} value={player.name}>{player.name}</option>;
@@ -664,7 +667,7 @@ function NextTeam() {
                           </select>
                         </div>
 
-                        { playerToCampare && <PlayerCard player={playerToCampare} />}
+                        { playerToCampare && <div className='mt-4'><PlayerCard player={playerToCampare} /></div>}
                       </div>
 
                       {
@@ -679,7 +682,7 @@ function NextTeam() {
                             (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>MEJOR MAS PICANTE</a>)
                             }
       
-                            { infoMatch.type === 'next' &&
+                            { infoMatch.type === 'next' && !playerToCampare &&
                             (<a className='btn btn-primary' onClick={() => handleChangePlayer(playerSelected)}>CAMBIAR JUGADOR</a>)
                             }
                             
