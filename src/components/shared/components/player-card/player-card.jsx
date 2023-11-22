@@ -22,6 +22,9 @@ return (
                         <h3 className="card-title">{props.player.name}</h3>
                         <h6 className="card-subtitle mb-2 text-muted">{getPositionString(props.player.mainPosition)}</h6>
                         <p className="card-text"><span className="badge bg-primary rounded-pill">Edad {props.player.age}</span></p>
+                        <p className="card-text">Partidos jugados {props.player.totalMatch ? props.player.totalMatch : '--'}</p>
+                        <p className="card-text">Partidos ganados {props.player.totalMatchWin ? props.player.totalMatchWin : '--'}</p>
+                        <p className="card-text">Partidos perdidos {props.player.totalMatchLost ? props.player.totalMatchLost : '--'}</p>
                     </div>
                 </div>
                 <div>

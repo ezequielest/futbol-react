@@ -27,6 +27,8 @@ function NextTeam() {
     const [hardPlayer, setHardPlayer] = useState(null);
     const [allPlayers, setAllPlayers] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState([]);
+  
+    const [playerToCampare, setPlayerToCampare] = useState(null);
 
     const [playerToChange, setPlayerToChange] = useState(null);
     const [playerForChange, setPlayerForChange] = useState('');
@@ -37,6 +39,7 @@ function NextTeam() {
       const logged = JSON.parse(localStorage.getItem('isLoggedIn'));
       setIsLoggedIn(logged);
       getTeamForTheNextMatch();
+      getPlayersData();
     } , [])
 
     const getBeforeMatchTeam = async () => {
@@ -232,10 +235,21 @@ function NextTeam() {
         console.log('player temp ', playerTemp)
         const totalPoints = calcPoinsPlayer(playerTemp);
         console.log('totalPoints ', totalPoints)
+
+        payload = {
+          defense:      playerTemp.defense,
+          middle:       playerTemp.middle,
+          offence:      playerTemp.offence,
+          totalMatch: playerTemp.totalMatch ? playerTemp.totalMatch + 1 : 1,
+          totalPoints:  totalPoints
+        }
+
         updateDoc(player, {
           defense:      playerTemp.defense,
           middle:       playerTemp.middle,
           offence:      playerTemp.offence,
+          totalMatchWin: playerTemp.totalMatchWin ? playerTemp.totalMatchWin + 1 : 1,
+          totalMatch: playerTemp.totalMatch ? playerTemp.totalMatch + 1 : 1,
           totalPoints:  totalPoints
         });
       })
@@ -278,6 +292,8 @@ function NextTeam() {
             defense:      playerTemp.defense,
             middle:       playerTemp.middle,
             offence:      playerTemp.offence,
+            totalMatchLost: playerTemp.totalMatchLost ? playerTemp.totalMatchLost + 1 : 1,
+            totalMatch: playerTemp.totalMatch ? playerTemp.totalMatch + 1 : 1,
             totalPoints:  totalPoints
           });
       })
@@ -385,7 +401,6 @@ function NextTeam() {
 
     const handleChangePlayer = (player) => {
       setPlayerToChange(player);
-      getPlayersData(player);
 
       $('#showDataPlayer').modal('hide');
       $('#modalChangePlayer').modal('show');
@@ -399,11 +414,16 @@ function NextTeam() {
             playersArray.push(doc.data())
           });
 
-          const playersArrayFilter = playersArray.filter(playerTeam => {
-            return playerTeam.name !== player.name
-          }) 
+          let playersArrayTemp;
+          if (player) {
+            playersArrayTemp = playersArray.filter(playerTeam => {
+              return playerTeam.name !== player.name
+            }) 
+          } else {
+            playersArrayTemp = playersArray;
+          }
 
-          setAllPlayers(playersArrayFilter);
+          setAllPlayers(playersArrayTemp);
           localStorage.setItem('players',JSON.stringify(playersArray));
       } catch (error) {
           console.error("Error al obtener datos de Firestore:", error);
@@ -431,6 +451,22 @@ function NextTeam() {
       })
       console.log('player for change ', playerForCh);
       setPlayerForChange(playerTemp);
+    }
+
+    const handleSectionPlayerToCompare = (e) => {
+      const options = e.target.options;
+      let playerForCh;
+      for (let i = 0; i < options.length; i++) {
+          if (options[i].selected) {
+              playerForCh = options[i].value;
+          }
+      }
+
+      const playerTemp = allPlayers.find((player) => {
+        return player.name === playerForCh;
+      })
+      console.log('player for change ', playerForCh);
+      setPlayerToCampare(playerTemp);
     }
 
     const handleChangePlayerToPlayer = () => {
@@ -612,26 +648,46 @@ function NextTeam() {
                   <div className="modal-content">
 
                     <div className="modal-body">
-                      <PlayerCard player={playerSelected} />
-                    </div>
+                      <div className="players-compare-container">
 
-                    {
-                      isLoggedIn && (
-                        <div className="modal-footer">
-                        {!bestPlayer && infoMatch.type !== 'next' &&
-                        (<a className='btn btn-primary' onClick={() => handleBestPlayer(playerSelected)}>MEJOR JUGADOR</a>)
-                        }
-  
-                        {!hardPlayer && infoMatch.type !== 'next' &&
-                        (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>MEJOR MAS PICANTE</a>)
-                        }
-  
-                        { infoMatch.type === 'next' &&
-                        (<a className='btn btn-primary' onClick={() => handleChangePlayer(playerSelected)}>CAMBIAR JUGADOR</a>)
-                        }
+                       <PlayerCard player={playerSelected} />
+
+                        <div>
+                          <h5>comparar con jugador</h5>
+                          <select name="allPlayers" id="allPlayersSelect" value={playerForChange?.name || ''} className="form-select all-players single mt-4" onChange={handleSectionPlayerToCompare}>
+                              <option value="">Comparar con</option>
+                              {
+                                  allPlayers?.map((player, i)=> {
+                                      return <option key={i} value={player.name}>{player.name}</option>;
+                                  })
+                              }
+                          </select>
+                        </div>
+
+                        { playerToCampare && <PlayerCard player={playerToCampare} />}
                       </div>
-                      )
-                    }
+
+                      {
+                        isLoggedIn && (
+                          <>
+                            <div className="modal-footer">
+                            {!bestPlayer && infoMatch.type !== 'next' &&
+                            (<a className='btn btn-primary' onClick={() => handleBestPlayer(playerSelected)}>MEJOR JUGADOR</a>)
+                            }
+      
+                            {!hardPlayer && infoMatch.type !== 'next' &&
+                            (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>MEJOR MAS PICANTE</a>)
+                            }
+      
+                            { infoMatch.type === 'next' &&
+                            (<a className='btn btn-primary' onClick={() => handleChangePlayer(playerSelected)}>CAMBIAR JUGADOR</a>)
+                            }
+                            
+                            </div>
+                          </>
+                        )
+                      }
+                      </div>
                     </div>
                 </div>
               </div>
