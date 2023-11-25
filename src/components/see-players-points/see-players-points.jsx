@@ -39,7 +39,6 @@ function SeePlayersPoints() {
         console.log('playerSelected ', playerSelected);
         setViewPlayerSelected(playerSelected);
         $('#showDataPlayer').modal('show');
-
     }
 
     return (
@@ -59,7 +58,7 @@ function SeePlayersPoints() {
                             <div className="col-lg-12 mb-4">
                             <h3>Puntos de jugadores</h3>
  
-                            <div class="cards-container">     
+                            <div className="cards-container">     
                                 {
                                 allPlayers?.map((player, i)=> {
                                     let listClass = '';

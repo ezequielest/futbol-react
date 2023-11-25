@@ -32,14 +32,7 @@ function AdminPlayers(props) {
     const [isEditingPlayer, setIsEditingPlayer] = useState(false);
 
     useEffect(()=>{
-
-        //const players = JSON.parse(localStorage.getItem('players'));
-        //setAllPlayers(players);
-
-        //if (!players) {
-            getPlayersData();
-        //}
-
+        getPlayersData();
     }, []);
 
     const getPlayersData = async () => {
@@ -142,8 +135,8 @@ function AdminPlayers(props) {
     }
 
     const addPlayer =  () => {
-      setIsEditingPlayer(false);
-      $('#newPlayerModal').modal('show');
+        setIsEditingPlayer(false);
+        $('#newPlayerModal').modal('show');
     }
 
     const editPlayer = (player) => {
@@ -162,7 +155,7 @@ function AdminPlayers(props) {
         setNewPlayerForm({
             ...newPlayerForm,
             image: fileName
-          });
+        });
     }
 
     return (
@@ -334,8 +327,8 @@ function AdminPlayers(props) {
                                     <label className="form-label">Velocidad</label>
                                     <input type="text" className="form-control" name="speed" value={newPlayerForm.speed || ''} onChange={handleInputChange}/>
                                     </div>
-                                     <div className="col mb-3">
-                                     <label className="form-label">Potencia de disparo</label>
+                                    <div className="col mb-3">
+                                    <label className="form-label">Potencia de disparo</label>
                                     <input type="text" className="form-control" name="powerShoot" value={newPlayerForm.powerShoot || ''} onChange={handleInputChange}/>
                                     </div>
                                 </div>
@@ -364,10 +357,10 @@ function AdminPlayers(props) {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={closeModal}>Cancelar</button>
                             { isEditingPlayer &&
-                              <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Editar</button>
+                                <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Editar</button>
                             }
                             { !isEditingPlayer &&
-                              <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Agregar</button>
+                                <button type="button" disabled={loading} className="btn btn-primary" onClick={saveChange}>Agregar</button>
                             }
                         </div>
                         </div>
