@@ -9,7 +9,6 @@ import { useNavigate  } from "react-router-dom";
 import {calcPoinsPlayer} from '/src/components/shared/player-service';
 import swal from 'sweetalert';
 
-
 function NextTeam() {
 
     const [teamOneArray, setTeamOneArray] = useState([]);
@@ -32,6 +31,14 @@ function NextTeam() {
 
     const [playerToChange, setPlayerToChange] = useState(null);
     const [playerForChange, setPlayerForChange] = useState('');
+
+    const [showGuestForm, setShowGuestForm] = useState(false);
+    const [guestToChange, setGuestToChange] = useState({});
+    const [guestForm, setGuestForm] = useState({
+      name: '',
+      points: 0
+  });
+
 
     const navigate = useNavigate();
 
@@ -175,24 +182,34 @@ function NextTeam() {
 
           if (localResultMatch > visitingResultMatch) {
             teamOneArray.forEach(async player => {
-              addPoints(player, 2);
+              if (player.name.indexOf('INVITADO') !== -1) {
+                addPoints(player);
+              }
             })
 
             teamTwoArray.forEach(async player => {
-              removePoints(player);
+              if (player.name.indexOf('INVITADO') !== -1) {
+                removePoints(player);
+              }
             });
 
           } else if (localResultMatch < visitingResultMatch){
             teamOneArray.forEach(async player => {
-              removePoints(player);
+              if (player.name.indexOf('INVITADO') !== -1) {
+                removePoints(player);
+              }
             })
 
             teamTwoArray.forEach(async player => {
-              addPoints(player);
+              if (player.name.indexOf('INVITADO') !== -1) {
+                addPoints(player);
+              }
             });
           } else {
             //empate, suma 1
-            addPoints(player, 1);
+            if (player.name.indexOf('INVITADO') !== -1) {
+              addPoints(player);
+            }
           }
 
           console.log('saved ok');
@@ -529,6 +546,39 @@ function NextTeam() {
       }
     }
 
+    const addGuest = () => {
+      setShowGuestForm(true);
+    }
+
+    const handleGuestForm = (e) => {
+
+        const name = e.target.name;
+        const value = e.target.value;
+
+        const form = {
+          ...guestForm,
+          [name]: value
+        }
+
+        setGuestForm(form);
+    }
+
+    const addGuestToChange = () => {
+
+      const guest = {
+        name: guestForm.name + ' (INVITADO)',
+        mainPosition: '3',
+        totalPoints: guestForm.points
+      }
+
+      setPlayerForChange(guest);
+      setShowGuestForm(false);
+    }
+
+    const cancelGuestToChange = () => {
+      setShowGuestForm(false);
+    }
+
     return (<>
               <header>
                 <a className='btn btn-primary' onClick={getBeforeMatchTeam}>PARTIDO ANTERIOR</a>
@@ -722,14 +772,36 @@ function NextTeam() {
                         </div>
 
                         <div>
-                          <select name="allPlayers" id="allPlayersSelect" value={playerForChange?.name || ''} className="form-select all-players single mt-4" onChange={handleSectionPlayerToChange}>
+
+
+                          { !showGuestForm && !playerForChange &&
+                          
+                          (<>
+                            <select name="allPlayers" id="allPlayersSelect" value={playerForChange?.name || ''} className="form-select all-players single mt-4" onChange={handleSectionPlayerToChange}>
                               <option value="">Seleccionar reemplazo</option>
                               {
                                   allPlayers?.map((player, i)=> {
                                       return <option key={i} value={player.name}>{player.name}</option>;
                                   })
                               }
-                          </select>
+                            </select>
+                            <button className="btn btn-outline-dark mx-2 mt-2" onClick={addGuest}>Agregar invitado</button>
+                          </>)
+                          
+                          }
+
+                          { showGuestForm && 
+                          (<>
+                            <form className='mt-4'>
+                              <label>Nombre</label>
+                              <input type="text" name="name" className='form-control' onChange={handleGuestForm}/>
+                              <label>Puntos totales</label>
+                              <input type="number" name="points" className='form-control' onChange={handleGuestForm}/>
+                          </form>
+                          <button className="btn btn-outline-primary mx-2 mt-4" onClick={addGuestToChange} >Agregar</button>
+                          <button className="btn btn-outline-danger mx-2 mt-4" onClick={cancelGuestToChange} >Cancelar</button>
+                          </>)
+                          }
 
                         </div>
 
@@ -743,6 +815,7 @@ function NextTeam() {
                     </div>
                 </div>
               </div>
+
             </>
     )
 }

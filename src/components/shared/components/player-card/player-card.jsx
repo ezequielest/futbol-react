@@ -2,7 +2,6 @@
 
 import './player-card.scss';
 
-
 function PlayerCard(props) {
 
 const getPositionString = (number)=> {
@@ -12,7 +11,7 @@ const getPositionString = (number)=> {
 }
 
 return (
-   <div className="card">
+    <div className="card">
         <div className="card-body">
             <div style={{ display: 'flex', justifyContent: 'space-between'}}>
                 <div style={{ display: 'flex'}} className="mb-3">

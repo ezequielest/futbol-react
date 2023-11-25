@@ -4,6 +4,7 @@ import {useEffect} from 'react';
 import { db } from "/src/firebase/firebase.js";
 import { doc, collection, getDocs, setDoc } from "firebase/firestore";
 import { useNavigate  } from "react-router-dom";
+import AddGuestModal from '/src/components/shared/components/add-guest-modal/add-guest-modal'
 
 function BuildTeam() {
 
@@ -14,6 +15,9 @@ function BuildTeam() {
 
     const [teamOneArray, setTeamOneArray] = useState([]);
     const [teamTwoArray, setTeamTwoArray] = useState([]);
+
+    const [showGuestModal, setShowGuestModal] = useState(false);
+
 
     const [pointsTeamOne, setPointsTeamOne] = useState(0);
     const [pointsTeamTwo, setPointsTeamTwo] = useState(0);
@@ -125,7 +129,7 @@ function BuildTeam() {
         setMondayPlayers([...resetOnTeam(mondayPlayers)]);
 
         let mondayPlayersRandom = shuffle(mondayPlayers);
-        let arqueros = getForPosition('Arquero', mondayPlayersRandom);
+        let arqueros = getForPosition('1', mondayPlayersRandom);
 
         //CONSULTA - como actualizar el mismo array a medida que necesito transformarlo, linea 112 y 113
         if (arqueros) {
@@ -354,7 +358,7 @@ function BuildTeam() {
 
     const getForPosition = (position, teamArray) => {
         return teamArray.filter(player => {
-            return player.posicion === position;
+            return player.mainPosition === position;
         });
     }
 
@@ -446,6 +450,35 @@ function BuildTeam() {
 
     }
 
+    const addGuest = () => {
+        setShowGuestModal(true);
+    }
+
+    const onCloseModal = () => {
+        console.log('el modal se cerro y lo estoy recibiendo desde el padre');
+        setShowGuestModal(false);
+    }
+
+    const onGuestPlayerSelected = (guest) => {
+        console.log('player guest ', guest);
+
+        if ((mondayPlayers.length + 1) > maxPlayers) {
+            setErrorString('Se excele la cantidad máxima de jugadores');
+        } else {
+            const mondayPlayersTemp = mondayPlayers;
+
+            mondayPlayersTemp.push({
+                name: guest.name,
+                totalPoints: guest.points,
+                mainPosition: '3',
+                onTeam: false
+            })
+    
+            setMondayPlayers(mondayPlayersTemp);
+        }
+    }
+
+
     return (<>
                 <div id="content-wrapper" className="d-flex flex-column">
                 {/* Main Content */}
@@ -478,6 +511,11 @@ function BuildTeam() {
                                 <div className="card shadow mb-4 p-4">
                                     <div className='selection-list'>
                                         <h3 className='mb-4'>Lista de selección</h3>
+                                        <div className='mb-4'>
+                                            <button className="btn btn-primary" style={{ marginRight: '10px'}} onClick={addPlayers}>Sumar al partido</button>
+                                            <button className="btn btn-danger mx-2" onClick={resetMondayTeam}>Reiniciar selección</button>
+                                            <button className="btn btn-outline-dark mx-2" onClick={addGuest}>Agregar invitado</button>
+                                        </div>
                                         <select name="allPlayers" id="allPlayersSelect" className="form-select all-players" multiple onChange={handleAllPlayersChange}>
                                             {
                                                 allPlayers?.map((player, i)=> {
@@ -485,10 +523,6 @@ function BuildTeam() {
                                                 })
                                             }
                                         </select>
-                                        <div>
-                                            <button className="btn btn-primary mt-2" style={{ marginRight: '10px'}} onClick={addPlayers}>Sumar al lunes</button>
-                                            <button className="btn btn-danger mt-2" onClick={resetMondayTeam}>Reiniciar selección</button>
-                                        </div>
                                     </div>
                                 </div>
                                 <div>
@@ -556,23 +590,8 @@ function BuildTeam() {
 
                 </div>
 
-                <div className="modal fade" id="newPlayerModal" tabIndex="-1" aria-labelledby="newPlayerModal" aria-hidden="true">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Modal title</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <p>Modal body text goes here.</p>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
+                <AddGuestModal showModal={showGuestModal} closeModal={onCloseModal} guestPlayerSelected={onGuestPlayerSelected}/>
+
             </>
 
     )
