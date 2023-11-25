@@ -87,6 +87,10 @@ function AdminPlayers(props) {
             onTeam: false
         };
 
+        if (!isEditingPlayer) {
+            payload.originalPoints = totalPoints;
+        }
+
         setLoading(true);
 
         if (isEditingPlayer) {

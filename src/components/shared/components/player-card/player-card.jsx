@@ -18,7 +18,19 @@ return (
                     { props.player.image && <img className="avatar-player-card" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + props.player.image} />}
                     { !props.player.image && props.player.name && <div className="avatar-player-card placeholder">{props.player.name[0] }</div>}
                     <div>
-                        <h3 className="card-title">{props.player.name}</h3>
+                        <h3 className="card-title">{props.player.name}  
+                            { props.player.totalPoints- props.player.originalPoints > 0 &&
+                                <sup className='text-success mx-2'>+{props.player.totalPoints - props.player.originalPoints }</sup>
+                            }
+
+                            { props.player.totalPoints - props.player.originalPoints  == 0 &&
+                                <sup className='text-primary mx-2'>{props.player.totalPoints - props.player.originalPoints }</sup>
+                            }
+
+                            { props.player.totalPoints - props.player.originalPoints  < 0 &&
+                                <sup className='text-danger mx-2'>{props.player.totalPoints - props.player.originalPoints }</sup>
+                            }
+                        </h3>
                         <h6 className="card-subtitle mb-2 text-muted">{getPositionString(props.player.mainPosition)}</h6>
                         <p className="card-text"><span className="badge bg-primary rounded-pill">Edad {props.player.age}</span></p>
                     </div>
