@@ -730,7 +730,7 @@ function NextTeam() {
                             }
       
                             {!hardPlayer && infoMatch.type !== 'next' &&
-                            (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>MEJOR MAS PICANTE</a>)
+                            (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>JUGADOR MAS PICANTE</a>)
                             }
       
                             { infoMatch.type === 'next' && !playerToCampare &&
