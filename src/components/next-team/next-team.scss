@@ -132,8 +132,13 @@ header {
   height: auto !important;
 }
 
-.modal-content {
+.modal-content.data-player-content {
   width: auto !important;
+  min-width: 320px;
+}
+
+.player-card-container {
+  min-width:  365px;
 }
 
 .players-compare-container{

@@ -182,33 +182,33 @@ function NextTeam() {
 
           if (localResultMatch > visitingResultMatch) {
             teamOneArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') !== -1) {
-                addPoints(player);
+              if (player.name.indexOf('INVITADO') === -1) {
+                addPoints(player, 2);
               }
             })
 
             teamTwoArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') !== -1) {
-                removePoints(player);
+              if (player.name.indexOf('INVITADO') === -1) {
+                removePoints(player, 2);
               }
             });
 
           } else if (localResultMatch < visitingResultMatch){
             teamOneArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') !== -1) {
-                removePoints(player);
+              if (player.name.indexOf('INVITADO') === -1) {
+                removePoints(player, 2);
               }
             })
 
             teamTwoArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') !== -1) {
-                addPoints(player);
+              if (player.name.indexOf('INVITADO') === -1) {
+                addPoints(player, 2);
               }
             });
           } else {
             //empate, suma 1
-            if (player.name.indexOf('INVITADO') !== -1) {
-              addPoints(player);
+            if (player.name.indexOf('INVITADO') === -1) {
+              addPoints(player, 1);
             }
           }
 
@@ -698,14 +698,15 @@ function NextTeam() {
 
               <div className="modal fade" id="showDataPlayer" tabIndex="-1" aria-labelledby="showDataPlayer" aria-hidden="true">
                 <div className="modal-dialog">
-                  <div className="modal-content">
+                  <div className="modal-content data-player-content">
 
                     <div className="modal-body h-100 mobile-100">
                       <div className="players-compare-container h-100 mobile-100">
+                        <div className='player-card-container'>
+                          <PlayerCard player={playerSelected} />
+                        </div>
 
-                       <PlayerCard player={playerSelected} />
-
-                        <div className='mt-4 mb-2 mx-4'>
+                        <div className='mt-4 mb-4 mx-4'>
                           <h5>Comparar con</h5>
                           <select name="allPlayers" id="allPlayersSelect" value={playerForChange?.name || ''} className="form-select all-players single mt-4" onChange={handleSectionPlayerToCompare}>
                               <option value="">Elegir jugador</option>
@@ -717,7 +718,7 @@ function NextTeam() {
                           </select>
                         </div>
 
-                        { playerToCampare && <div className='mt-4'><PlayerCard player={playerToCampare} /></div>}
+                        { playerToCampare && <div className='player-card-container'><PlayerCard player={playerToCampare} /></div>}
                       </div>
 
                       {
@@ -754,15 +755,15 @@ function NextTeam() {
 
                     <div className="modal-body">
                         <div className='change-for-container'>
-                        <div>
+                        <div className='mx-4'>
                           { playerToChange?.image &&<img className="avatar-player mx-2" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + playerToChange?.image} />}
                           { !playerToChange?.image && <div className="avatar-player placeholder">{playerToChange?.name[0] }</div>}
                           { playerToChange?.name }
                         </div>
                         { playerForChange &&
                         (<>
-                        <div>POR</div>
-                        <div>
+                        <div className='mx-4'>POR</div>
+                        <div className='mx-4'>
                           { playerForChange?.image &&<img className="avatar-player mx-2" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + playerForChange?.image} />}
                           { !playerForChange?.image && <div className="avatar-player placeholder">{playerForChange?.name[0] }</div>}
                           { playerForChange?.name }
@@ -792,14 +793,13 @@ function NextTeam() {
 
                           { showGuestForm && 
                           (<>
+                            <h5 className='mt-4 mb-2'>Datos de invitado</h5>
                             <form className='mt-4'>
                               <label>Nombre</label>
                               <input type="text" name="name" className='form-control' onChange={handleGuestForm}/>
                               <label>Puntos totales</label>
                               <input type="number" name="points" className='form-control' onChange={handleGuestForm}/>
                           </form>
-                          <button className="btn btn-outline-primary mx-2 mt-4" onClick={addGuestToChange} >Agregar</button>
-                          <button className="btn btn-outline-danger mx-2 mt-4" onClick={cancelGuestToChange} >Cancelar</button>
                           </>)
                           }
 
@@ -809,8 +809,19 @@ function NextTeam() {
                     </div>
                     
                     <div className="modal-footer">
+                    { showGuestForm &&
+                    (<>
+                      <button className="btn btn-outline-primary mx-2 mt-4" onClick={addGuestToChange} >Agregar</button>
+                      <button className="btn btn-outline-danger mx-2 mt-4" onClick={cancelGuestToChange} >Cancelar</button>
+                    </>) 
+                    }
+
+                    { !showGuestForm &&
+                    (<>
                       <a className='btn btn-primary' onClick={() => handleChangePlayerToPlayer(playerSelected)}>CAMBIAR</a>
                       <a className='btn btn-danger' onClick={() => hideModalChangePlayer(playerSelected)}>CANCELAR</a>
+                    </>)
+                    }
                     </div>
                     </div>
                 </div>

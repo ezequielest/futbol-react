@@ -245,7 +245,7 @@ function AdminPlayers(props) {
 
             <div className="modal fade" id="showDataPlayer" tabIndex="-1" aria-labelledby="showDataPlayer" aria-hidden="true">
                 <div className="modal-dialog">
-                    <div className="modal-body">
+                    <div className="modal-body card-player-content">
                         <PlayerCard player={viewPlayerSelected} />
                     </div>
                 </div>

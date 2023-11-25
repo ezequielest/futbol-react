@@ -29,11 +29,11 @@ return (
             </div>
 
             <div className="mb-2">
-                <h5>PARTIDOS</h5>
-                <div class="player-match-stat">
-                <p className="card-text">Jugados <span className="badge bg-primary rounded-pill">{props.player.totalMatch ? props.player.totalMatch : 0}</span></p>
-                <p className="card-text">Ganados <span className="badge bg-success rounded-pill">{props.player.totalMatchWin ? props.player.totalMatchWin : 0}</span></p>
-                <p className="card-text">Perdidos <span className="badge bg-danger rounded-pill">{props.player.totalMatchLost ? props.player.totalMatchLost : 0}</span></p>
+                <h5>PARTIDOS JUGADOS<span className="badge bg-primary rounded-pill mx-2">{props.player.totalMatch ? props.player.totalMatch : 0}</span></h5>
+                <div className="player-match-stat">
+                <p className="card-text">Ganados    <span className="badge bg-success rounded-pill w-100">{props.player.totalMatchWin ? props.player.totalMatchWin : 0}</span></p>
+                <p className="card-text">Empatados  <span className="badge bg-warning rounded-pill w-100">{props.player.totalMatchWin && props.player.totalMatchLost ? props.player.totalMatch - props.player.totalMatchWin - props.player.totalMatchLost : 0}</span> </p>
+                <p className="card-text">Perdidos   <span className="badge bg-danger rounded-pill w-100">{props.player.totalMatchLost ? props.player.totalMatchLost : 0}</span></p>
                 </div>
             </div>
 
