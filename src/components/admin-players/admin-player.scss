@@ -1,12 +1,17 @@
 .avatar-player-card {
-    width: 100px;
-    height: 100px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     color: white;
     border: 1px solid #777;
     object-fit: scale-down;
     margin-bottom: 12px;
     margin-right: 12px;
+
+    @media (min-width: 720px) {
+        width: 100px;
+        height: 100px;
+    } 
 
     &.placeholder {
         background-color: grey;

@@ -110,8 +110,13 @@ function SeePlayersPoints() {
 
             <div className="modal fade" id="showDataPlayer" tabIndex="-1" aria-labelledby="showDataPlayer" aria-hidden="true">
                 <div className="modal-dialog">
-                    <div className="modal-body">
-                        <PlayerCard player={viewPlayerSelected} />
+                    <div className="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <PlayerCard player={viewPlayerSelected} />
+                        </div>
                     </div>
                 </div>
             </div>

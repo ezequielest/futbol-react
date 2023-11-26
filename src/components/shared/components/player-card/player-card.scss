@@ -1,12 +1,17 @@
 .circle-point {
     border-radius: 50%;
-    height: 65px;
-    width: 65px;
+    width: 40px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
 
     font-size: 26px;
+
+    @media (min-width: 720px) {
+        height: 65px;
+        width: 65px;
+    } 
 }
 
 .player-match-stat{
@@ -29,5 +34,5 @@
 .player-card {
     max-width: 465px;
     margin: 0 auto;
-    min-width: 320px;
+    border: 0 !important;
 }
