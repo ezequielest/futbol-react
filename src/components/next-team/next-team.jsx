@@ -207,9 +207,17 @@ function NextTeam() {
             });
           } else {
             //empate, suma 1
-            if (player.name.indexOf('INVITADO') === -1) {
-              addPoints(player, 1);
-            }
+            teamOneArray.forEach(async player => {
+              if (player.name.indexOf('INVITADO') === -1) {
+                removePoints(player, 1);
+              }
+            })
+
+            teamTwoArray.forEach(async player => {
+              if (player.name.indexOf('INVITADO') === -1) {
+                addPoints(player, 1);
+              }
+            });
           }
 
           console.log('saved ok');
@@ -338,7 +346,7 @@ function NextTeam() {
           querySnapshot.forEach((document) => {
             console.log(document.id, " => ", document.data());
             const playerData = document.data();
-            const player = doc(db, "players", document.id);
+            const playerDB = doc(db, "players", document.id);
 
             let playerTemp =  playerData;
 
@@ -349,7 +357,8 @@ function NextTeam() {
 
             const totalPoints = calcPoinsPlayer(playerTemp);
 
-            updateDoc(player, {
+            updateDoc(playerDB, {
+              cantMVP:      playerTemp.cantMVP ? playerTemp.playerTemp.cantMVP  + 1 : 1,
               ability:      playerTemp.ability,
               powerShoot:   playerTemp.powerShoot,
               resistance:   playerTemp.resistance,
@@ -374,7 +383,7 @@ function NextTeam() {
         querySnapshot.forEach((document) => {
           console.log(document.id, " => ", document.data());
           const playerData = document.data();
-          const player = doc(db, "players", document.id);
+          const playerDB = doc(db, "players", document.id);
 
           let playerTemp =  playerData;
 
@@ -385,7 +394,7 @@ function NextTeam() {
 
           const totalPoints = calcPoinsPlayer(playerTemp);
 
-          updateDoc(player, {
+          updateDoc(playerDB, {
             ability:      playerTemp.ability,
             powerShoot:   playerTemp.powerShoot,
             resistance:   playerTemp.resistance,

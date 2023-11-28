@@ -4,6 +4,15 @@
     }
 }
 
+.modal-content.see-players {
+    width: 100%;
+
+    @media (min-width: 425px) {
+        width: auto;
+        min-width: 425px;
+    }
+}
+
 .cards-container {
     max-width: 100%;
     display: grid;

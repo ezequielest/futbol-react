@@ -18,18 +18,18 @@ return (
                     { props.player.image && <img className="avatar-player-card" src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + props.player.image} />}
                     { !props.player.image && props.player.name && <div className="avatar-player-card placeholder">{props.player.name[0] }</div>}
                     <div>
-                        <h3 className="card-title">{props.player.name}  
-                            { props.player.totalPoints- props.player.originalPoints > 0 &&
+                        <h3 className="card-title">{props.player.name}
+                        { props.player.originalPoints &&  props.player.originalPoints && props.player.totalPoints - props.player.originalPoints > 0 &&
                                 <sup className='text-success mx-2'>+{props.player.totalPoints - props.player.originalPoints }</sup>
-                            }
+                        }
 
-                            { props.player.totalPoints - props.player.originalPoints  == 0 &&
+                        {  props.player.originalPoints &&  props.player.originalPoints && props.player.totalPoints - props.player.originalPoints  == 0 &&
                                 <sup className='text-primary mx-2'>{props.player.totalPoints - props.player.originalPoints }</sup>
-                            }
+                        }
 
-                            { props.player.totalPoints - props.player.originalPoints  < 0 &&
+                        {  props.player.originalPoints &&  props.player.originalPoints && props.player.totalPoints - props.player.originalPoints  < 0 &&
                                 <sup className='text-danger mx-2'>{props.player.totalPoints - props.player.originalPoints }</sup>
-                            }
+                        }
                         </h3>
                         <h6 className="card-subtitle mb-2 text-muted">{getPositionString(props.player.mainPosition)}</h6>
                         <p className="card-text"><span className="badge bg-primary rounded-pill">Edad {props.player.age}</span></p>
@@ -43,9 +43,14 @@ return (
             <div className="mb-2">
                 <h5>PARTIDOS JUGADOS<span className="badge bg-primary rounded-pill mx-2">{props.player.totalMatch ? props.player.totalMatch : 0}</span></h5>
                 <div className="player-match-stat">
-                <p className="card-text">Ganados    <span className="badge bg-success rounded-pill w-100">{props.player.totalMatchWin ? props.player.totalMatchWin : 0}</span></p>
-                <p className="card-text">Empatados  <span className="badge bg-warning rounded-pill w-100">{props.player.totalMatchWin && props.player.totalMatchLost ? props.player.totalMatch - props.player.totalMatchWin - props.player.totalMatchLost : 0}</span> </p>
-                <p className="card-text">Perdidos   <span className="badge bg-danger rounded-pill w-100">{props.player.totalMatchLost ? props.player.totalMatchLost : 0}</span></p>
+                    <p>MVP <span className="badge bg-success rounded-pill w-100">{props.player.cantMVP ? props.player.cantMVP : 0}</span></p>
+                    <p>Libra <span className="badge bg-warning rounded-pill w-100">{props.player.cantLibra ? props.player.cantLibra : 0}</span></p>
+                    <p>MSP <span className="badge bg-danger rounded-pill w-100">{props.player.cantMSP ? props.player.cantMSP : 0}</span></p>
+                </div>
+                <div className="player-match-stat">
+                    <p className="card-text">Ganados    <span className="badge bg-success rounded-pill w-100">{props.player.totalMatchWin ? props.player.totalMatchWin : 0}</span></p>
+                    <p className="card-text">Empatados  <span className="badge bg-warning rounded-pill w-100">{props.player.totalMatchWin && props.player.totalMatchLost ? props.player.totalMatch - props.player.totalMatchWin - props.player.totalMatchLost : 0}</span> </p>
+                    <p className="card-text">Perdidos   <span className="badge bg-danger rounded-pill w-100">{props.player.totalMatchLost ? props.player.totalMatchLost : 0}</span></p>
                 </div>
             </div>
 
