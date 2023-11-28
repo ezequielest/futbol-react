@@ -82,7 +82,20 @@ function SeePlayersPoints() {
                                         
                                         <div className="card-body">
                                             <div className="first-line">
-                                                <div className="player-name">{ player.name }</div>
+                                                <div className="player-name">{ player.name }
+                                                
+                                                { player.totalPoints - player.originalPoints > 0 &&
+                                                        <sup className='text-success mx-2'>+{player.totalPoints - player.originalPoints }</sup>
+                                                }
+
+                                                {  player.totalPoints - player.originalPoints  == 0 &&
+                                                        <sup className='text-primary mx-2'>{player.totalPoints - player.originalPoints }</sup>
+                                                }
+
+                                                {  player.totalPoints - player.originalPoints  < 0 &&
+                                                        <sup className='text-danger mx-2'>{player.totalPoints - player.originalPoints }</sup>
+                                                }</div>
+
                                                 <div className="circle">{ player.totalPoints }</div>
                                             </div>
 
