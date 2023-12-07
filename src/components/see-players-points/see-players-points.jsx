@@ -25,18 +25,7 @@ function SeePlayersPoints() {
                 playersArray.push(doc.data())
             });
             setOriginalArray(playersArray);
-            const ordeByDiff = playersArray.sort((a,b) => {
-
-                if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
-                    return 1;
-                }
-    
-                if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
-                    return -1;
-                }
-    
-                return 0;
-            });
+            const ordeByDiff = orderByPoints(playersArray);
 
             setAllPlayers(ordeByDiff);
 
@@ -57,9 +46,22 @@ function SeePlayersPoints() {
         $('#showDataPlayer').modal('show');
     }
 
-    const orderByAscense = () => {
-        console.log('all player ', allPlayers)
-        const playersAscence = [...originalArray];
+    const handleOrderByAscense = () => {
+        orderByAscense();
+    }
+
+    const handleOrderByPoints = () => {
+        orderByPoints();
+    }
+
+    const orderByAscense = (playerArray) => {
+        let playersAscence = [];
+        if ( playerArray) {
+            playersAscence = playerArray;
+        } else {
+            playersAscence = [...originalArray];
+        }
+
         const order = playersAscence.sort((a,b) => {
 
             if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
@@ -73,29 +75,32 @@ function SeePlayersPoints() {
             return 0;
         });
 
-        console.log('order ascence ', order)
-
         setAllPlayers(order);
-        
     }
 
-    const orderByPoints = () => {
-            const players = [...originalArray];
+    const orderByPoints = (playerArray) => {
+        let players = [];
+        if ( playerArray) {
+            players = [...playerArray];
+        } else {
+            players = [...originalArray];
+        }
 
-            const order = players.sort((a,b) => {
+        const order = players.sort((a,b) => {
 
-                if (b.totalPoints > a.totalPoints) {
-                    return 1;
-                }
-    
-                if (b.totalPoints < a.totalPoints) {
-                    return -1;
-                }
-    
-                return 0;
-            });
-            console.log('order by points order ', order)
-            setAllPlayers(order);
+            if (b.totalPoints > a.totalPoints) {
+                return 1;
+            }
+
+            if (b.totalPoints < a.totalPoints) {
+                return -1;
+            }
+
+            return 0;
+        });
+
+        setAllPlayers(order);
+        return order;
     }
 
     return (
@@ -117,8 +122,8 @@ function SeePlayersPoints() {
                             
                             <p className="order-by">Ordenar por</p>
                             <div className="filter-container">
-                                <button className="btn btn-primary" onClick={orderByPoints}>Puntaje</button>
-                                <button className="btn btn-primary" onClick={orderByAscense}>Ascenso</button>
+                                <button className="btn btn-primary" onClick={handleOrderByPoints}>Puntaje</button>
+                                <button className="btn btn-primary" onClick={handleOrderByAscense}>Ascenso</button>
                             </div>
  
                             <div className="cards-container">     
