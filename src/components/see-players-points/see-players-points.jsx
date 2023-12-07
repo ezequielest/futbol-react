@@ -23,11 +23,22 @@ function SeePlayersPoints() {
                 console.log(doc.data())
                 playersArray.push(doc.data())
             });
-            const res = playersArray.sort((a,b) => { 
+            const softByDiffPoints = playersArray.sort((a,b) => { 
                 if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
                     return 1;
                 }
                 if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
+                return -1;
+                }
+                // a must be equal to b
+                return 0;
+            });
+
+            const res = softByDiffPoints.sort((a,b) => {
+                if (b.totalPoints > a.totalPoints) {
+                    return 1;
+                }
+                if (b.totalPoints < a.totalPoints) {
                 return -1;
                 }
                 // a must be equal to b
@@ -84,7 +95,9 @@ function SeePlayersPoints() {
                                     } else if (player.mainPosition === '2') {
                                         listClass = 'text-primary';
                                     }
-                                    return (<div key={i} className="card">
+                                    return (
+                                        <div key={i} className="card">
+                                        <span class="position-number">#{i+1}</span>
                                         {
                                             player.image && <img src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} className="avatar picture" alt="..."/>
                                         }
