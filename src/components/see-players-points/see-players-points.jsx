@@ -142,7 +142,7 @@ function SeePlayersPoints() {
                                     }
                                     return (
                                         <div key={i} className="card">
-                                        <span class="position-number">#{i+1}</span>
+                                        <span className="position-number">#{i+1}</span>
                                         {
                                             player.image && <img src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} className="avatar picture" alt="..."/>
                                         }

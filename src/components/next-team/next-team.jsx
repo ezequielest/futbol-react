@@ -26,6 +26,7 @@ function NextTeam() {
     const [playerSelected, setPlayerSelected] = useState({});
     const [bestPlayer, setBestPlayer] = useState(null);
     const [hardPlayer, setHardPlayer] = useState(null);
+    const [libraPlayer, setLibraPlayer] = useState(null);
     const [allPlayers, setAllPlayers] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState([]);
   
@@ -88,6 +89,7 @@ function NextTeam() {
 
             setBestPlayer(data.bestPlayer);
             setHardPlayer(data.hardPlayer);
+            setLibraPlayer(data.libraPlayer);
 
             const oneArray = JSON.parse(data['localTeam']);
             const twoArray = JSON.parse(data['visitingTeam']);
@@ -362,6 +364,49 @@ function NextTeam() {
       navigate("/build-team");
     }
 
+    const addHability = (player, pointsToAdd) => {
+      player.ability = player.ability + pointsToAdd > 99 ? 99 : parseInt(player.ability) + pointsToAdd;
+      player.powerShoot = player.powerShoot + pointsToAdd > 99 ? 99 : parseInt(player.powerShoot) + pointsToAdd;
+      player.resistance = player.resistance + pointsToAdd > 99 ? 99 : parseInt(player.resistance) + pointsToAdd;
+      player.speed = player.speed + pointsToAdd > 99 ? 99 : parseInt(player.speed) + pointsToAdd;
+
+      return player;
+    }
+
+    const handleLibraPlayer = (player) => {
+            //buscar el documento por id de partidos antetiores y meter la data1
+            const match = doc(db, "previous-matches", currentMatchId);
+
+            updateDoc(match, {
+              libraPlayer: player.name,
+            }).then(async () => {
+              setLibraPlayer(player.name);
+      
+                const q = query(collection(db, "players"), where("name", "==", player.name));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((document) => {
+                  console.log(document.id, " => ", document.data());
+                  const playerData = document.data();
+                  const playerDB = doc(db, "players", document.id);
+      
+                  let playerTemp =  playerData;
+      
+                  playerTemp = addHability(playerTemp, 1);
+      
+                  const totalPoints = calcPoinsPlayer(playerTemp);
+      
+                  updateDoc(playerDB, {
+                    cantLibra:    playerTemp.cantLibra ? playerTemp.cantLibra  + 1 : 1,
+                    ability:      playerTemp.ability,
+                    powerShoot:   playerTemp.powerShoot,
+                    resistance:   playerTemp.resistance,
+                    speed:        playerTemp.speed,
+                    totalPoints:  totalPoints
+                  });
+              });
+            });
+    }
+
     const handleBestPlayer = (player) => {
       //buscar el documento por id de partidos antetiores y meter la data1
       const match = doc(db, "previous-matches", currentMatchId);
@@ -380,10 +425,7 @@ function NextTeam() {
 
             let playerTemp =  playerData;
 
-            playerTemp.ability = playerData.ability + 1 > 99 ? 99 : parseInt(playerData.ability) + 1;
-            playerTemp.powerShoot = playerData.powerShoot + 1 > 99 ? 99 : parseInt(playerData.powerShoot) + 1;
-            playerTemp.resistance = playerData.resistance + 1 > 99 ? 99 : parseInt(playerData.resistance) + 1;
-            playerTemp.speed = playerData.speed + 1 > 99 ? 99 : parseInt(playerData.speed) + 1;
+            playerTemp = addHability(playerTemp, 1);
 
             const totalPoints = calcPoinsPlayer(playerTemp);
 
@@ -396,7 +438,7 @@ function NextTeam() {
               totalPoints:  totalPoints
             });
         });
-      })
+      });
     }
 
     const handleHardPlayer = (player) => {
@@ -425,6 +467,7 @@ function NextTeam() {
           const totalPoints = calcPoinsPlayer(playerTemp);
 
           updateDoc(playerDB, {
+            cantMSP:      playerTemp.cantMSP ? playerTemp.playerTemp.cantMSP  + 1 : 1,
             ability:      playerTemp.ability,
             powerShoot:   playerTemp.powerShoot,
             resistance:   playerTemp.resistance,
@@ -646,7 +689,7 @@ function NextTeam() {
                     <div className="row mb-4 players-chosen">
 
                       {/* Earnings (Monthly) Card Example */}
-                      <div className="col-md-6 mb-4">
+                      <div className="col-md-3 mb-4">
                           <div className="card border-left-primary shadow h-100 py-2">
                               <div className="card-body">
                                   <div className="row no-gutters align-items-center">
@@ -664,7 +707,24 @@ function NextTeam() {
                       </div>
 
                       {/* Earnings (Monthly) Card Example */}
-                      <div className="col-md-6 mb-4">
+                      <div className="col-md-3 mb-4">
+                          <div className="card border-left-warning shadow h-100 py-2">
+                              <div className="card-body">
+                                  <div className="row no-gutters align-items-center">
+                                      <div className="col mr-2">
+                                          <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                              LIBRA</div>
+                                          <div className="h5 mb-0 font-weight-bold text-gray-800">{ libraPlayer ? libraPlayer : 'SIN DEFINIR'}</div>
+                                      </div>
+                                      <div className="col-auto">
+                                          <i className="fas fa-pepper-hot fa-2x text-gray-300"></i>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div className="col-md-3 mb-4">
                           <div className="card border-left-success shadow h-100 py-2">
                               <div className="card-body">
                                   <div className="row no-gutters align-items-center">
@@ -775,6 +835,11 @@ function NextTeam() {
                             {!bestPlayer && infoMatch.type !== 'next' &&
                             (<a className='btn btn-primary' onClick={() => handleBestPlayer(playerSelected)}>MEJOR JUGADOR</a>)
                             }
+                            
+                            {!libraPlayer && infoMatch.type !== 'next' &&
+                            (<a className='btn btn-warning' onClick={() => handleLibraPlayer(playerSelected)}>JUGADOR LIBRA</a>)
+                            }
+      
       
                             {!hardPlayer && infoMatch.type !== 'next' &&
                             (<a className='btn btn-danger' onClick={() => handleHardPlayer(playerSelected)}>JUGADOR MAS PICANTE</a>)
