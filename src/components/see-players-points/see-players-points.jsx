@@ -9,6 +9,7 @@ import avatarImage from './../../../public/avatar-player.png'
 function SeePlayersPoints() {
 
     const [allPlayers, setAllPlayers] = useState([]);
+    const [originalArray, setOriginalArray] = useState([]);
     const [viewPlayerSelected, setViewPlayerSelected] = useState({});
 
     useEffect(()=>{
@@ -23,20 +24,22 @@ function SeePlayersPoints() {
                 console.log(doc.data())
                 playersArray.push(doc.data())
             });
-            const softByDiffPoints = playersArray.sort((a,b) => {
+            setOriginalArray(playersArray);
+            const ordeByDiff = playersArray.sort((a,b) => {
 
                 if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
                     return 1;
                 }
-
+    
                 if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
                     return -1;
                 }
-
+    
                 return 0;
             });
 
-            setAllPlayers(softByDiffPoints);
+            setAllPlayers(ordeByDiff);
+
             localStorage.setItem('players',JSON.stringify(playersArray));
         } catch (error) {
             console.error("Error al obtener datos de Firestore:", error);
@@ -52,6 +55,47 @@ function SeePlayersPoints() {
     const viewPlayer = (playerSelected) => {
         setViewPlayerSelected(playerSelected);
         $('#showDataPlayer').modal('show');
+    }
+
+    const orderByAscense = () => {
+        console.log('all player ', allPlayers)
+        const playersAscence = [...originalArray];
+        const order = playersAscence.sort((a,b) => {
+
+            if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
+                return 1;
+            }
+
+            if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
+                return -1;
+            }
+
+            return 0;
+        });
+
+        console.log('order ascence ', order)
+
+        setAllPlayers(order);
+        
+    }
+
+    const orderByPoints = () => {
+            const players = [...originalArray];
+
+            const order = players.sort((a,b) => {
+
+                if (b.totalPoints > a.totalPoints) {
+                    return 1;
+                }
+    
+                if (b.totalPoints < a.totalPoints) {
+                    return -1;
+                }
+    
+                return 0;
+            });
+            console.log('order by points order ', order)
+            setAllPlayers(order);
     }
 
     return (
@@ -70,6 +114,12 @@ function SeePlayersPoints() {
                             {/* Content Column */}
                             <div className="col-lg-12 mb-4">
                             <h3>Puntos de jugadores</h3>
+                            
+                            <p className="order-by">Ordenar por</p>
+                            <div className="filter-container">
+                                <button className="btn btn-primary" onClick={orderByPoints}>Puntaje</button>
+                                <button className="btn btn-primary" onClick={orderByAscense}>Ascenso</button>
+                            </div>
  
                             <div className="cards-container">     
                                 {
