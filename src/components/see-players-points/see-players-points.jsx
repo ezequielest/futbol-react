@@ -23,14 +23,16 @@ function SeePlayersPoints() {
                 console.log(doc.data())
                 playersArray.push(doc.data())
             });
-            const softByDiffPoints = playersArray.sort((a,b) => { 
-                if ((b.totalPoints - b.originalPoints) + b.totalPoints > (a.totalPoints - a.originalPoints) + a.totalPoints) {
+            const softByDiffPoints = playersArray.sort((a,b) => {
+
+                if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
                     return 1;
                 }
-                if ((b.totalPoints - b.originalPoints) + b.totalPoints < (a.totalPoints - a.originalPoints) + a.totalPoints) {
-                return -1;
+
+                if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
+                    return -1;
                 }
-                // a must be equal to b
+
                 return 0;
             });
 
