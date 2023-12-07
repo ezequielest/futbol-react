@@ -57,26 +57,20 @@
         
         .avatar {
             width: 100%;
-            object-fit: none;
+            height: 265px;
             background-color: #d6d6d6;
             border-top-right-radius: 6px;
             border-top-left-radius: 6px;
+
+            &.picture {
+                object-fit: cover;
+            }
+
+            &.placeholder {
+                object-fit: none;
+            }
         }
 
-        .avatar-placeholder {
-            width: 100%;
-            //height: 250px;
-
-            object-fit: contain;
-            border-top-right-radius: 6px;
-            border-top-left-radius: 6px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 92px;
-        }
 
         .first-line {
             display: flex;

@@ -75,11 +75,11 @@ function SeePlayersPoints() {
                                     }
                                     return (<div key={i} className="card">
                                         {
-                                            player.image && <img src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} className="avatar" alt="..."/>
+                                            player.image && <img src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} className="avatar picture" alt="..."/>
                                         }
                                         {
                                             !player.image &&
-                                            <div className="avatar-placeholder"><img src={avatarImage} className="avatar" alt="..."/></div>
+                                            <div><img src={avatarImage} className="avatar placeholder" alt="..."/></div>
                                         }
 
                                         <div className="card-body">
