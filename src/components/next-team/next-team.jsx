@@ -14,6 +14,8 @@ function NextTeam() {
     const [teamOneArray, setTeamOneArray] = useState([]);
     const [teamTwoArray, setTeamTwoArray] = useState([]);
     const [matchHasEnded, setMatchHasEnded] = useState(false);
+    const [matchIsFinishing, setMatchIsFinishing] = useState(false);
+
     const [matchResultForm, setMatchResultForm] = useState({
       localResult: 0,
       visitingResult: 0
@@ -161,77 +163,105 @@ function NextTeam() {
       $('#showDataPlayer').modal('show');
     }
 
-    const saveAsOldMatch = () => {
-      const teamOne = JSON.stringify(teamOneArray);
-      const teamTwo = JSON.stringify(teamTwoArray);
-
-      const payload = {
-          localResult: matchResultForm.localResult,
-          visitingResult: matchResultForm.visitingResult,
-          localTeam: teamOne,
-          visitingTeam: teamTwo,
-          update: new Date(),
+    const checkMatchAlreadyEnd = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "next-match"));
+        return querySnapshot.size === 0 ? true : false;
+      } catch (error) {
+        console.error("Error al obtener datos de Firestore:", error);
+        return true;
       }
+    }
 
-      addDoc(collection(db, "previous-matches"), payload)
-      .then(()=>{
-          //delete from next-team
-          //update team points
-          const localResultMatch = parseInt(matchResultForm.localResult);
-          const visitingResultMatch = parseInt(matchResultForm.visitingResult);
+    const saveAsOldMatch = () => {
+      console.log('guardando...')
+      checkMatchAlreadyEnd().then(matchAlreadyEnd => {
 
-          if (localResultMatch > visitingResultMatch) {
-            teamOneArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') === -1) {
-                addPoints(player, 2);
-              }
-            })
-
-            teamTwoArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') === -1) {
-                removePoints(player, 2);
-              }
-            });
-
-          } else if (localResultMatch < visitingResultMatch){
-            teamOneArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') === -1) {
-                removePoints(player, 2);
-              }
-            })
-
-            teamTwoArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') === -1) {
-                addPoints(player, 2);
-              }
-            });
-          } else {
-            //empate, suma 1
-            teamOneArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') === -1) {
-                removePoints(player, 1);
-              }
-            })
-
-            teamTwoArray.forEach(async player => {
-              if (player.name.indexOf('INVITADO') === -1) {
-                addPoints(player, 1);
-              }
-            });
+        if (!matchAlreadyEnd) {
+          setMatchIsFinishing(true);
+          const teamOne = JSON.stringify(teamOneArray);
+          const teamTwo = JSON.stringify(teamTwoArray);
+    
+          const payload = {
+              localResult: matchResultForm.localResult,
+              visitingResult: matchResultForm.visitingResult,
+              localTeam: teamOne,
+              visitingTeam: teamTwo,
+              update: new Date(),
           }
-
-          console.log('saved ok');
-          deleteDoc(doc(db, "next-match", currentMatchId))
+    
+          addDoc(collection(db, "previous-matches"), payload)
           .then(()=>{
               //delete from next-team
               //update team points
-              getTeamForTheNextMatch();
+              const localResultMatch = parseInt(matchResultForm.localResult);
+              const visitingResultMatch = parseInt(matchResultForm.visitingResult);
+    
+              if (localResultMatch > visitingResultMatch) {
+                teamOneArray.forEach(async player => {
+                  if (player.name.indexOf('INVITADO') === -1) {
+                    addPoints(player, 2);
+                  }
+                })
+    
+                teamTwoArray.forEach(async player => {
+                  if (player.name.indexOf('INVITADO') === -1) {
+                    removePoints(player, 2);
+                  }
+                });
+    
+              } else if (localResultMatch < visitingResultMatch){
+                teamOneArray.forEach(async player => {
+                  if (player.name.indexOf('INVITADO') === -1) {
+                    removePoints(player, 2);
+                  }
+                })
+    
+                teamTwoArray.forEach(async player => {
+                  if (player.name.indexOf('INVITADO') === -1) {
+                    addPoints(player, 2);
+                  }
+                });
+              } else {
+                //empate, suma 1
+                teamOneArray.forEach(async player => {
+                  if (player.name.indexOf('INVITADO') === -1) {
+                    removePoints(player, 1);
+                  }
+                })
+    
+                teamTwoArray.forEach(async player => {
+                  if (player.name.indexOf('INVITADO') === -1) {
+                    addPoints(player, 1);
+                  }
+                });
+              }
+    
+              console.log('saved ok');
+              deleteDoc(doc(db, "next-match", currentMatchId))
+              .then(()=>{
+                  //delete from next-team
+                  //update team points
+                  getTeamForTheNextMatch();
+                  setMatchIsFinishing(false);
+              }).catch((err)=>{
+                  console.log(err)
+              })
           }).catch((err)=>{
               console.log(err)
           })
-      }).catch((err)=>{
-          console.log(err)
-      })
+        } else {
+          swal({
+            title: "Partido finalizado",
+            text: "Este partido ya ah sido finalizado por alguien más",
+            icon: "error",
+            buttons: true,
+            dangerMode: true,
+          });
+
+          getTeamForTheNextMatch();
+        }
+      });
     }
 
     const cancelSaveOldMatch = () => {
@@ -276,8 +306,8 @@ function NextTeam() {
           defense:      playerTemp.defense,
           middle:       playerTemp.middle,
           offence:      playerTemp.offence,
-          totalMatchWin: playerTemp.totalMatchWin ? playerTemp.totalMatchWin + 1 : 1,
           totalMatch: playerTemp.totalMatch ? playerTemp.totalMatch + 1 : 1,
+          totalMatchWin: playerTemp.totalMatchWin ? playerTemp.totalMatchWin + 1 : 1,
           totalPoints:  totalPoints
         });
       })
@@ -320,8 +350,8 @@ function NextTeam() {
             defense:      playerTemp.defense,
             middle:       playerTemp.middle,
             offence:      playerTemp.offence,
-            totalMatchLost: playerTemp.totalMatchLost ? playerTemp.totalMatchLost + 1 : 1,
             totalMatch: playerTemp.totalMatch ? playerTemp.totalMatch + 1 : 1,
+            totalMatchLost: playerTemp.totalMatchLost ? playerTemp.totalMatchLost + 1 : 1,
             totalPoints:  totalPoints
           });
       })
@@ -698,7 +728,12 @@ function NextTeam() {
                       <input className='form-control' name="visitingResult" type="number" onChange={handleInputChange}/>
                     </div>
                     <a className='btn btn-danger cancel' onClick={cancelSaveOldMatch}>CANCELAR</a>
-                    <a className='btn btn-primary' onClick={saveAsOldMatch}>GUARDAR RESULTADO</a>
+                    { matchIsFinishing &&
+                      <button className='btn btn-primary'>GUARDANDO RESULTADO...</button>
+                    }
+                    { !matchIsFinishing &&
+                      <button className='btn btn-primary' onClick={saveAsOldMatch}>GUARDAR RESULTADO</button>
+                    }
                     </div>
                   )
                   }

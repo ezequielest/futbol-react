@@ -4,7 +4,8 @@ import {useEffect} from 'react';
 import { db } from "/src/firebase/firebase.js";
 import { doc, collection, getDocs, setDoc } from "firebase/firestore";
 import { useNavigate  } from "react-router-dom";
-import AddGuestModal from '/src/components/shared/components/add-guest-modal/add-guest-modal'
+import AddGuestModal from '/src/components/shared/components/add-guest-modal/add-guest-modal';
+import './build-team.scss';
 
 function BuildTeam() {
 
@@ -511,10 +512,10 @@ function BuildTeam() {
                                 <div className="card shadow mb-4 p-4">
                                     <div className='selection-list'>
                                         <h3 className='mb-4'>Lista de selección</h3>
-                                        <div className='mb-4'>
+                                        <div className='mb-4 buttons-add-players-next-team'>
                                             <button className="btn btn-primary" style={{ marginRight: '10px'}} onClick={addPlayers}>Sumar al partido</button>
-                                            <button className="btn btn-danger mx-2" onClick={resetMondayTeam}>Reiniciar selección</button>
-                                            <button className="btn btn-outline-dark mx-2" onClick={addGuest}>Agregar invitado</button>
+                                            <button className="btn btn-danger" onClick={resetMondayTeam}>Reiniciar selección</button>
+                                            <button className="btn btn-outline-dark" onClick={addGuest}>Agregar invitado</button>
                                         </div>
                                         <select name="allPlayers" id="allPlayersSelect" className="form-select all-players" multiple onChange={handleAllPlayersChange}>
                                             {

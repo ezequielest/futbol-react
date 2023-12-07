@@ -77,13 +77,14 @@ function SeePlayersPoints() {
                                             player.image && <img src={'https://futbol-team.s3.us-east-2.amazonaws.com/' + player.image} className="avatar" alt="..."/>
                                         }
                                         {
-                                            !player.image && <div className="img-placeholder"></div>
+                                            !player.image &&
+                                            <div className="avatar-placeholder"><img src={'./../../../public/avatar-player.png'} className="avatar" alt="..."/></div>
                                         }
-                                        
+
                                         <div className="card-body">
                                             <div className="first-line">
                                                 <div className="player-name">{ player.name }
-                                                
+
                                                 { player.totalPoints - player.originalPoints > 0 &&
                                                         <sup className='text-success mx-2'>+{player.totalPoints - player.originalPoints }</sup>
                                                 }

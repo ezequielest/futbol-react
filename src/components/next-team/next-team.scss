@@ -21,7 +21,7 @@ header {
     padding: 20px;
     text-align: center;
 
-    a {
+    a, button {
       margin-top: 20px;
     }
   }
@@ -87,7 +87,7 @@ header {
     .set-win-form {
       padding: 20px;
 
-      a {
+      a, button {
         margin-top: 10px;
       }
     }
@@ -97,7 +97,7 @@ header {
 .finish-team-form {
   padding: 20px;
 
-  a {
+  a, button {
     margin-top: 20px;
 
     &.cancel {
