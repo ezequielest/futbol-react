@@ -4,6 +4,7 @@ import { db } from "/src/firebase/firebase.js";
 import { collection, getDocs} from "firebase/firestore";
 import PlayerCard from '../shared/components/player-card/player-card';
 import './see-players-points.scss';
+import avatarImage from './../../../public/avatar-player.png'
 
 function SeePlayersPoints() {
 
@@ -78,7 +79,7 @@ function SeePlayersPoints() {
                                         }
                                         {
                                             !player.image &&
-                                            <div className="avatar-placeholder"><img src={'./../../../public/avatar-player.png'} className="avatar" alt="..."/></div>
+                                            <div className="avatar-placeholder"><img src={avatarImage} className="avatar" alt="..."/></div>
                                         }
 
                                         <div className="card-body">
