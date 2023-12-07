@@ -24,7 +24,7 @@ function SeePlayersPoints() {
                 playersArray.push(doc.data())
             });
             const res = playersArray.sort((a,b) => { 
-                if ((b.totalPoints - b.originalPoints) > Math.abs(a.totalPoints - a.originalPoints)) {
+                if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
                     return 1;
                 }
                 if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
