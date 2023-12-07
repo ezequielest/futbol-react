@@ -24,29 +24,17 @@ function SeePlayersPoints() {
                 playersArray.push(doc.data())
             });
             const softByDiffPoints = playersArray.sort((a,b) => { 
-                if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints)) {
+                if ((b.totalPoints - b.originalPoints) > (a.totalPoints - a.originalPoints) && b.totalPoints > a.totalPoints) {
                     return 1;
                 }
-                if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints)) {
+                if ((b.totalPoints - b.originalPoints) < (a.totalPoints - a.originalPoints) && b.totalPoints < a.totalPoints) {
                 return -1;
                 }
                 // a must be equal to b
                 return 0;
             });
 
-            const res = softByDiffPoints.sort((a,b) => {
-                if (b.totalPoints > a.totalPoints) {
-                    return 1;
-                }
-                if (b.totalPoints < a.totalPoints) {
-                return -1;
-                }
-                // a must be equal to b
-                return 0;
-            })
-
-            console.log('after sort ', res)
-            setAllPlayers(res);
+            setAllPlayers(softByDiffPoints);
             localStorage.setItem('players',JSON.stringify(playersArray));
         } catch (error) {
             console.error("Error al obtener datos de Firestore:", error);
