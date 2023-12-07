@@ -23,7 +23,20 @@ function SeePlayersPoints() {
                 console.log(doc.data())
                 playersArray.push(doc.data())
             });
-            setAllPlayers(playersArray);
+            const res = playersArray.sort((a,b) => { 
+                if (Math.abs((a.totalPoints - a.originalPoints)) > Math.abs((b.totalPoints - b.originalPoints))) {
+                    return 1;
+                  }
+                  if (Math.abs((a.totalPoints - a.originalPoints)) < Math.abs((b.totalPoints - b.originalPoints))) {
+                    return -1;
+                  }
+                  // a must be equal to b
+                  return 0;
+
+            })
+
+            console.log('after sort ', res)
+            setAllPlayers(res);
             localStorage.setItem('players',JSON.stringify(playersArray));
         } catch (error) {
             console.error("Error al obtener datos de Firestore:", error);
@@ -37,7 +50,6 @@ function SeePlayersPoints() {
     }
 
     const viewPlayer = (playerSelected) => {
-        console.log('playerSelected ', playerSelected);
         setViewPlayerSelected(playerSelected);
         $('#showDataPlayer').modal('show');
     }
@@ -126,8 +138,8 @@ function SeePlayersPoints() {
             <div className="modal fade" id="showDataPlayer" tabIndex="-1" aria-labelledby="showDataPlayer" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content see-players">
-                        <div class="modal-header">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div className="modal-header">
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             <PlayerCard player={viewPlayerSelected} />
