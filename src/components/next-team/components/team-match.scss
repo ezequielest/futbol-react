@@ -17,6 +17,10 @@
     }
 }
 
+.team-match-container:last-child {
+  margin-top: 20px;
+}
+
 .name {
     text-align: center;
 }
@@ -25,16 +29,25 @@
     width: 100%;
 
     &:last-child {
-      margin-bottom: 120px;
+      margin-top: 40px;
+
+      @media (min-width: '830px'){
+        margin-top: 0;
+      }
     }
   
     .team-name {
         text-transform: uppercase;
       text-align: center;
       font-weight: 600;
+
+      &.last-child {
+        margin-top: 20px;
+      }
+      margin-top: 10px;
   
       @media (min-width: '375px'){
-          margin-bottom: 40px;
+          margin-bottom: 10px;
       }
     }
   }
@@ -127,5 +140,8 @@
         //padding: 15px;
       }
   
-  
+  }
+
+  .finish-team-form {
+    margin-top: 40px;
   }

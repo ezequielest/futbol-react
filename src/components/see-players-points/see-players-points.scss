@@ -34,15 +34,20 @@
         grid-template-columns: repeat(2, 1fr); 
     }
 
-    @media (min-width: 650px) {
+    @media (min-width: 580px) {
         grid-template-columns: repeat(3, 1fr); 
     }
 
-    @media (min-width: 900px) {
+    @media (min-width: 750px) {
         grid-template-columns: repeat(4, 1fr); 
     }
+
+    @media (min-width: 1050px) {
+        grid-template-columns: repeat(5, 1fr); 
+    }
+
     @media (min-width: 1200px) {
-        grid-template-columns: repeat(6, 1fr); 
+        grid-template-columns: repeat(7, 1fr); 
     }
 
     .card {
@@ -100,6 +105,9 @@
             .player-name {
                 font-size: 16x;
                 font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .circle {

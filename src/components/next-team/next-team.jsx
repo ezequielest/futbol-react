@@ -388,13 +388,13 @@ function NextTeam() {
                   console.log(document.id, " => ", document.data());
                   const playerData = document.data();
                   const playerDB = doc(db, "players", document.id);
-      
+
                   let playerTemp =  playerData;
-      
+
                   playerTemp = addHability(playerTemp, 1);
-      
+
                   const totalPoints = calcPoinsPlayer(playerTemp);
-      
+
                   updateDoc(playerDB, {
                     cantLibra:    playerTemp.cantLibra ? playerTemp.cantLibra  + 1 : 1,
                     ability:      playerTemp.ability,
@@ -689,7 +689,7 @@ function NextTeam() {
                     <div className="row mb-4 players-chosen">
 
                       {/* Earnings (Monthly) Card Example */}
-                      <div className="col-md-3 mb-4">
+                      <div className="col-md-4 mb-4">
                           <div className="card border-left-primary shadow h-100 py-2">
                               <div className="card-body">
                                   <div className="row no-gutters align-items-center">
@@ -707,7 +707,7 @@ function NextTeam() {
                       </div>
 
                       {/* Earnings (Monthly) Card Example */}
-                      <div className="col-md-3 mb-4">
+                      <div className="col-md-4 mb-4">
                           <div className="card border-left-warning shadow h-100 py-2">
                               <div className="card-body">
                                   <div className="row no-gutters align-items-center">
@@ -724,7 +724,7 @@ function NextTeam() {
                           </div>
                       </div>
 
-                      <div className="col-md-3 mb-4">
+                      <div className="col-md-4 mb-4">
                           <div className="card border-left-success shadow h-100 py-2">
                               <div className="card-body">
                                   <div className="row no-gutters align-items-center">
